@@ -13,6 +13,24 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/hauntedHouse.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/hauntedHouse.mp3
+
+#begin Backgrounds/hauntedIntro.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/hauntedIntro.png
+
 #begin Backgrounds/hauntedRoom1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -73,6 +91,18 @@
 /processorParam:TextureFormat=Color
 /build:Backgrounds/hauntedRoom5.png
 
+#begin Buttons/morePixelButtons.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buttons/morePixelButtons.png
+
 #begin Buttons/pixelButtons.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -84,6 +114,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Buttons/pixelButtons.png
+
+#begin Buttons/playBtn.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buttons/playBtn.png
 
 #begin Fonts/gameFont.ttf
 /copy:Fonts/gameFont.ttf

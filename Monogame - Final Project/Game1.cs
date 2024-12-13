@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Monogame___Final_Project
 {
@@ -9,6 +10,26 @@ namespace Monogame___Final_Project
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        Rectangle window;
+
+
+        // Audio
+        Song hauntedHouseSong;
+
+        // Backgrounds
+        Texture2D introTexture;
+
+        // Buttons
+        Texture2D playBtnTexture;
+        Rectangle playBtnRect;
+
+
+        enum Screen
+        {
+            Intro,
+
+        }
+        Screen screen;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -18,16 +39,29 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            screen = Screen.Intro;
+            window = new Rectangle(0, 0, 800, 500);
+            _graphics.PreferredBackBufferWidth = window.Width;
+            _graphics.PreferredBackBufferHeight = window.Height;
+            _graphics.ApplyChanges();
 
             base.Initialize();
+
+            playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 300, playBtnTexture.Width, playBtnTexture.Height);
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Audio
+            hauntedHouseSong = Content.Load<Song>("Audio/hauntedHouse");
+
+            // Backgrounds
+            introTexture = Content.Load<Texture2D>("Backgrounds/hauntedIntro");
+
+            // Buttons
+            playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
         }
 
         protected override void Update(GameTime gameTime)
@@ -35,7 +69,10 @@ namespace Monogame___Final_Project
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            if (MediaPlayer.State == MediaState.Stopped)
+            {
+                MediaPlayer.Play(hauntedHouseSong);
+            }
 
             base.Update(gameTime);
         }
@@ -44,7 +81,17 @@ namespace Monogame___Final_Project
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+
+            if (screen == Screen.Intro)
+            {
+                _spriteBatch.Draw(introTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(playBtnTexture, playBtnRect, Color.White);
+            }
+
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
