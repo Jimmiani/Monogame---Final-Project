@@ -19,6 +19,18 @@
 /processorParam:Quality=Best
 /build:Audio/hauntedHouse.mp3
 
+#begin Backgrounds/forestBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/forestBackground.png
+
 #begin Backgrounds/hauntedIntro.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -129,6 +141,13 @@
 
 #begin Fonts/gameFont.ttf
 /copy:Fonts/gameFont.ttf
+
+#begin Fonts/pixelFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/pixelFont.spritefont
 
 #begin Images/armory.png
 /importer:TextureImporter
@@ -406,7 +425,7 @@
 /processorParam:TextureFormat=Color
 /build:Images/windows.png
 
-#begin Spritesheets/Owlet_Monster_Climb.png
+#begin Spritesheets/Enemy/Attack1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -416,9 +435,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster_Climb.png
+/build:Spritesheets/Enemy/Attack1.png
 
-#begin Spritesheets/Owlet_Monster_Death.png
+#begin Spritesheets/Enemy/Attack2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -428,9 +447,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster_Death.png
+/build:Spritesheets/Enemy/Attack2.png
 
-#begin Spritesheets/Owlet_Monster_Hurt.png
+#begin Spritesheets/Enemy/Death.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -440,9 +459,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster_Hurt.png
+/build:Spritesheets/Enemy/Death.png
 
-#begin Spritesheets/Owlet_Monster_Idle.png
+#begin Spritesheets/Enemy/Idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -452,9 +471,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster_Idle.png
+/build:Spritesheets/Enemy/Idle.png
 
-#begin Spritesheets/Owlet_Monster_Jump.png
+#begin Spritesheets/Enemy/Walk.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -464,9 +483,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster_Jump.png
+/build:Spritesheets/Enemy/Walk.png
 
-#begin Spritesheets/Owlet_Monster_Run.png
+#begin Spritesheets/Magic Effects/Fire Beam.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -476,9 +495,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster_Run.png
+/build:Spritesheets/Magic Effects/Fire Beam.png
 
-#begin Spritesheets/Owlet_Monster_Walk.png
+#begin Spritesheets/Magic Effects/Purple Aura.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -488,9 +507,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster_Walk.png
+/build:Spritesheets/Magic Effects/Purple Aura.png
 
-#begin Spritesheets/Owlet_Monster.png
+#begin Spritesheets/Magic Effects/Summon.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -500,5 +519,113 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Owlet_Monster.png
+/build:Spritesheets/Magic Effects/Summon.png
+
+#begin Spritesheets/Magic Effects/Teleport.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Magic Effects/Teleport.png
+
+#begin Spritesheets/Main Character/Owlet_Monster_Climb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster_Climb.png
+
+#begin Spritesheets/Main Character/Owlet_Monster_Death.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster_Death.png
+
+#begin Spritesheets/Main Character/Owlet_Monster_Hurt.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster_Hurt.png
+
+#begin Spritesheets/Main Character/Owlet_Monster_Idle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster_Idle.png
+
+#begin Spritesheets/Main Character/Owlet_Monster_Jump.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster_Jump.png
+
+#begin Spritesheets/Main Character/Owlet_Monster_Run.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster_Run.png
+
+#begin Spritesheets/Main Character/Owlet_Monster_Walk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster_Walk.png
+
+#begin Spritesheets/Main Character/Owlet_Monster.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/Owlet_Monster.png
 
