@@ -425,7 +425,7 @@
 /processorParam:TextureFormat=Color
 /build:Images/windows.png
 
-#begin Spritesheets/Enemy/Attack3.png
+#begin Spritesheets/Enemy/Attack.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -435,7 +435,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Spritesheets/Enemy/Attack3.png
+/build:Spritesheets/Enemy/Attack.png
 
 #begin Spritesheets/Enemy/Death.png
 /importer:TextureImporter

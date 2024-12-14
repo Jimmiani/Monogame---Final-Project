@@ -89,7 +89,7 @@ namespace Monogame___Final_Project
             charIdleAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Idle");
             enemyIdleAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Idle");
             enemyWalkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Walk");
-            enemyAtkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Attack3");
+            enemyAtkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Attack");
 
 
         }

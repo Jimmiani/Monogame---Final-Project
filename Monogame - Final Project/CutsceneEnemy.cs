@@ -25,8 +25,9 @@ namespace Monogame___Final_Project
         private bool _isAttacking;
         private float _attackDuration;
         private float _attackTimer;
-        private float _spawnTimer = 0f;
-        private float _attackDelay = 10f;
+        private float _spawnTimer;
+        private float _attackDelay;
+        private bool _hasAttacked;
 
 
         public CutsceneEnemy(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D attackSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed)
@@ -45,7 +46,9 @@ namespace Monogame___Final_Project
             _attackDuration = 1.2f;
             _attackTimer = 0f;
             _speed = speed;
-
+            _spawnTimer = 0f;
+            _attackDelay = 7f;
+            _hasAttacked = false;
 
             int idleWidth = _idleSpriteSheet.Width / 4;
             int idleHeight = _idleSpriteSheet.Height;
@@ -75,33 +78,30 @@ namespace Monogame___Final_Project
             }
 
 
-            int attackWidth = _attackSpriteSheet.Width / 6;
-            int attackHeight = _attackSpriteSheet.Height / 2;
+            int attackWidth = _attackSpriteSheet.Width / 12;
+            int attackHeight = _attackSpriteSheet.Height;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 12; i++)
             {
-                for (int j = 0; j < 6; j++)
-                {
-                    Rectangle sourceRect = new Rectangle(j * attackWidth, i * attackHeight, attackWidth, attackHeight);
-                    Texture2D cropTexture = new Texture2D(graphicsDevice, attackWidth, attackHeight);
-                    Color[] data = new Color[attackWidth * attackHeight];
-                    _attackSpriteSheet.GetData(0, sourceRect, data, 0, data.Length);
-                    cropTexture.SetData(data);
-                    if (_attackFrames.Count < 12) 
-                        _attackFrames.Add(cropTexture);
-                }
-                
+                 Rectangle sourceRect = new Rectangle(i * attackWidth, 0, attackWidth, attackHeight);
+                 Texture2D cropTexture = new Texture2D(graphicsDevice, attackWidth, attackHeight);
+                 Color[] data = new Color[attackWidth * attackHeight];
+                 _attackSpriteSheet.GetData(0, sourceRect, data, 0, data.Length);
+                 cropTexture.SetData(data);
+                 if (_attackFrames.Count < 12) 
+                     _attackFrames.Add(cropTexture);
             }
 
-            _position = new Vector2(740, 480 - (walkHeight * 2));
+            _position = new Vector2(740, 480 - (walkHeight * 3));
 
         }
         public void TriggerAttack()
         {
-            if (!_isAttacking)
+            if (!_isAttacking && !_hasAttacked)
             {
                 _isAttacking = true;  
                 _attackTimer = 0f;
+                _spawnTimer = 0f;
             }
         }
 
@@ -110,7 +110,7 @@ namespace Monogame___Final_Project
             _frameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             _spawnTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_spawnTimer >= _attackDelay && !_isAttacking)
+            if (_spawnTimer >= _attackDelay && !_isAttacking && !_hasAttacked)
             {
                 TriggerAttack();
             }
@@ -126,10 +126,22 @@ namespace Monogame___Final_Project
                 _attackTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _speed = Vector2.Zero;
 
+
+                if (_frameTimer >= _animationSpeed)
+                {
+                    _currentFrame++;
+                    if (_currentFrame >= _currentAnimationFrames.Count)
+                    {
+                        _currentFrame = 0;
+                    }
+                    _frameTimer = 0f;
+                }
+
                 if (_attackTimer >= _attackDuration)
                 {
-                    _isAttacking = false;  
-                    _attackTimer = 0f;     
+                    _isAttacking = false;
+                    _hasAttacked = true;
+                    _attackTimer = 0f;
                     SetAnimation("idle");
                 }
             }
@@ -192,7 +204,7 @@ namespace Monogame___Final_Project
         {
             if (_currentAnimationFrames.Count > 0)
             {
-                spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _position, null, Color.White, 0f, new Vector2(0, 0), 2, SpriteEffects.None, 0f);
+                spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _position, null, Color.White, 0f, new Vector2(0, 0), 3, SpriteEffects.None, 0f);
             }
                 
         }
