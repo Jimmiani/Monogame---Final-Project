@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Diagnostics;
 
 namespace Monogame___Final_Project
 {
@@ -27,6 +28,11 @@ namespace Monogame___Final_Project
         // Fonts
         SpriteFont titleFont;
 
+        // Sprite sheet
+        CutsceneCharacter cutsceneCharacter;
+        CutsceneEnemy cutsceneEnemy;
+        Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation;
+
 
         enum Screen
         {
@@ -50,9 +56,15 @@ namespace Monogame___Final_Project
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
 
+            
+
             base.Initialize();
 
+            cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, GraphicsDevice, new Vector2(1, 0));
+            cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, GraphicsDevice, new Vector2(-1, 0));
+            cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
+            
         }
 
         protected override void LoadContent()
@@ -71,6 +83,15 @@ namespace Monogame___Final_Project
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
+
+            // Sprite sheets
+            charWalkAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Walk");
+            charIdleAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Idle");
+            enemyIdleAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Idle");
+            enemyWalkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Walk");
+            enemyAtkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Attack3");
+
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -111,6 +132,13 @@ namespace Monogame___Final_Project
                 }
             }
 
+            if (screen == Screen.Forest)
+            {
+                
+                cutsceneCharacter.Update(gameTime);
+                cutsceneEnemy.Update(gameTime);
+            }
+
             base.Update(gameTime);
         }
 
@@ -125,12 +153,14 @@ namespace Monogame___Final_Project
             {
                 _spriteBatch.Draw(introTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(playBtnTexture, playBtnRect, Color.White);
-                _spriteBatch.DrawString(titleFont, "The Elder", new Vector2(20, 20), Color.DimGray, 0, new Vector2(0, 0), 0.6f, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(titleFont, "The Eldritch", new Vector2(20, 20), Color.DimGray, 0, new Vector2(0, 0), 0.55f, SpriteEffects.None, 0);
                 _spriteBatch.DrawString(titleFont, "Gloom", new Vector2(190, 120), Color.ForestGreen, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
             }
             else if (screen == Screen.Forest)
             {
                 _spriteBatch.Draw(forestTexture, new Vector2(0, 0), Color.White);
+                cutsceneCharacter.Draw(_spriteBatch);
+                cutsceneEnemy.Draw(_spriteBatch);
             }
 
 
