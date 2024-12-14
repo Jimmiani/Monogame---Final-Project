@@ -13,33 +13,44 @@ namespace Monogame___Final_Project
         private Texture2D _idleSpriteSheet;
         private Texture2D _walkSpriteSheet;
         private Texture2D _attackSpriteSheet;
+        private Texture2D _summonSpriteSheet;
         private List<Texture2D> _idleFrames;
         private List<Texture2D> _walkFrames;
         private List<Texture2D> _attackFrames;
+        private List<Texture2D> _summonFrames;
         private List<Texture2D> _currentAnimationFrames;
         private int _currentFrame;
+        private int _currentSmnFrame;
         private float _frameTimer;
         private float _animationSpeed;
         private Vector2 _position;
         private Vector2 _speed;
+        private Vector2 _summonLocation;
         private bool _isAttacking;
         private float _attackDuration;
         private float _attackTimer;
         private float _spawnTimer;
         private float _attackDelay;
         private bool _hasAttacked;
+        private float _summonTimer;
+        private bool _isSummoning;
+        private float _summonDelay;
 
 
-        public CutsceneEnemy(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D attackSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed)
+        public CutsceneEnemy(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D attackSpriteSheet, Texture2D summonSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed)
         {
             _idleSpriteSheet = idleSpriteSheet;
             _walkSpriteSheet = walkSpriteSheet;
             _attackSpriteSheet = attackSpriteSheet;
+            _summonSpriteSheet = summonSpriteSheet;
+
             _idleFrames = new List<Texture2D>();
             _walkFrames = new List<Texture2D>();
             _attackFrames = new List<Texture2D>();
+            _summonFrames = new List<Texture2D>();
             _currentAnimationFrames = _idleFrames;
             _currentFrame = 0;
+            _currentSmnFrame = 0;
             _frameTimer = 0f;
             _animationSpeed = 0.1f;
             _isAttacking = false;
@@ -49,6 +60,9 @@ namespace Monogame___Final_Project
             _spawnTimer = 0f;
             _attackDelay = 7f;
             _hasAttacked = false;
+            _summonTimer = 0f;
+            _summonDelay = 3;
+            _summonLocation = new Vector2(470, 270);
 
             int idleWidth = _idleSpriteSheet.Width / 4;
             int idleHeight = _idleSpriteSheet.Height;
@@ -92,9 +106,26 @@ namespace Monogame___Final_Project
                      _attackFrames.Add(cropTexture);
             }
 
-            _position = new Vector2(740, 480 - (walkHeight * 3));
+
+            int summonWidth = _summonSpriteSheet.Width / 8;
+            int summonHeight = _summonSpriteSheet.Height;
+
+            for (int i = 0; i < 8; i++)
+            {
+                Rectangle sourceRect = new Rectangle(i * summonWidth, 0, summonWidth, summonHeight);
+                Texture2D cropTexture = new Texture2D(graphicsDevice, summonWidth, summonHeight);
+                Color[] data = new Color[summonWidth * summonHeight];
+                _summonSpriteSheet.GetData(0, sourceRect, data, 0, data.Length);
+                cropTexture.SetData(data);
+                if (_summonFrames.Count < 8)
+                    _summonFrames.Add(cropTexture);
+            }
+            _isSummoning = true;
+
+            _position = new Vector2(750, 480 - (walkHeight * 3));
 
         }
+
         public void TriggerAttack()
         {
             if (!_isAttacking && !_hasAttacked)
@@ -107,8 +138,30 @@ namespace Monogame___Final_Project
 
         public void Update(GameTime gameTime)
         {
-            _frameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _spawnTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (!_isSummoning)
+            {
+                _frameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _spawnTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (_isSummoning)
+            {
+                _summonDelay += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_currentSmnFrame >= _animationSpeed)
+                {
+                    _currentSmnFrame++;
+                    if (_currentSmnFrame > _summonFrames.Count)
+                    {
+                        _currentSmnFrame = 0;
+                    }
+                }
+                if (_summonDelay < _summonTimer)
+                {
+                    _isSummoning = false;
+                }
+
+            }
+
 
             if (_spawnTimer >= _attackDelay && !_isAttacking && !_hasAttacked)
             {
@@ -154,7 +207,8 @@ namespace Monogame___Final_Project
                 }
                 else if (_speed != Vector2.Zero)
                 {
-                    _position += _speed;
+                    if (!_isSummoning)
+                        _position += _speed;
                     SetAnimation("walk");
                 }
                 else
@@ -202,9 +256,15 @@ namespace Monogame___Final_Project
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (_isSummoning)
+            {
+                spriteBatch.Draw(_summonFrames[_currentSmnFrame], _summonLocation, null, Color.White, 0, new Vector2(0, 0), 3, SpriteEffects.None, 0);
+            }
+
+
             if (_currentAnimationFrames.Count > 0)
             {
-                spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _position, null, Color.White, 0f, new Vector2(0, 0), 3, SpriteEffects.None, 0f);
+                spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _position, null, Color.White, 0, new Vector2(0, 0), 3, SpriteEffects.None, 0);
             }
                 
         }

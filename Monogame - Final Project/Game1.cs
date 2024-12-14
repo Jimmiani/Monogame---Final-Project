@@ -31,7 +31,7 @@ namespace Monogame___Final_Project
         // Sprite sheet
         CutsceneCharacter cutsceneCharacter;
         CutsceneEnemy cutsceneEnemy;
-        Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation;
+        Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation;
 
 
         enum Screen
@@ -61,7 +61,7 @@ namespace Monogame___Final_Project
             base.Initialize();
 
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, GraphicsDevice, new Vector2(1, 0));
-            cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, GraphicsDevice, new Vector2(-1, 0));
+            cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0));
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
@@ -90,6 +90,7 @@ namespace Monogame___Final_Project
             enemyIdleAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Idle");
             enemyWalkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Walk");
             enemyAtkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Attack");
+            enemySmnAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Summon");
 
 
         }
