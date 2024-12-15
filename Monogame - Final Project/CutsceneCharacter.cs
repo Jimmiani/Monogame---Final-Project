@@ -86,7 +86,7 @@ namespace Monogame___Final_Project
                 _frameTimer = 0f;
             }
 
-            if (_position.X > 200)
+            if (_position.X > 230)
             {
                 _speed = Vector2.Zero;
             }
