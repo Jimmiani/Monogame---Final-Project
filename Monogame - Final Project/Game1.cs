@@ -13,13 +13,13 @@ namespace Monogame___Final_Project
 
         Rectangle window;
         MouseState mouseState, prevMouseState;
-
+        float forestSeconds, mansionSeconds;
 
         // Audio
         Song hauntedHouseSong;
 
         // Backgrounds
-        Texture2D introTexture, forestTexture;
+        Texture2D introTexture, forestTexture, blackTexture, mansion1Texture;
 
         // Buttons
         Texture2D playBtnTexture;
@@ -31,14 +31,14 @@ namespace Monogame___Final_Project
         // Sprite sheet
         CutsceneCharacter cutsceneCharacter;
         CutsceneEnemy cutsceneEnemy;
-        Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation;
+        Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation, charTeleportAnimation;
 
 
         enum Screen
         {
             Intro,
             Forest,
-
+            Mansion1,
         }
         Screen screen;
         public Game1()
@@ -55,12 +55,14 @@ namespace Monogame___Final_Project
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
+            forestSeconds = 0;
+            mansionSeconds = 0;
 
             
 
             base.Initialize();
 
-            cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, GraphicsDevice, new Vector2(1, 0));
+            cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, GraphicsDevice, new Vector2(1, 0));
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0));
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
@@ -77,6 +79,8 @@ namespace Monogame___Final_Project
             // Backgrounds
             introTexture = Content.Load<Texture2D>("Backgrounds/hauntedIntro");
             forestTexture = Content.Load<Texture2D>("Backgrounds/forestBackground");
+            blackTexture = Content.Load<Texture2D>("Backgrounds/blackBackground");
+            mansion1Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom1");
 
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -91,6 +95,7 @@ namespace Monogame___Final_Project
             enemyWalkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Walk");
             enemyAtkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Attack");
             enemySmnAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Summon");
+            charTeleportAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Teleport");
 
 
         }
@@ -135,9 +140,18 @@ namespace Monogame___Final_Project
 
             if (screen == Screen.Forest)
             {
-                
+                forestSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 cutsceneCharacter.Update(gameTime);
                 cutsceneEnemy.Update(gameTime);
+                if (forestSeconds >= 19)
+                {
+                    screen = Screen.Mansion1;
+                }
+            }
+
+            if (screen == Screen.Mansion1)
+            {
+                mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             base.Update(gameTime);
@@ -162,6 +176,14 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(forestTexture, new Vector2(0, 0), Color.White);
                 cutsceneCharacter.Draw(_spriteBatch);
                 cutsceneEnemy.Draw(_spriteBatch);
+            }
+            else if (screen == Screen.Mansion1)
+            {
+                _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
+                if (mansionSeconds > 3)
+                {
+                    _spriteBatch.Draw(mansion1Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), Color.White);
+                }
             }
 
 

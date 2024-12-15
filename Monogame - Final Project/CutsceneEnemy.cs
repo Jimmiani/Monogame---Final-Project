@@ -66,8 +66,9 @@ namespace Monogame___Final_Project
             _summonTimer = 0f;
             _summonDelayTimer = 0f;
             _summonDelay = 10;
-            _summonLocation = new Vector2(470, 270);
+            _summonLocation = new Vector2(420, 200);
             _summonerDelayTimer = 0f;
+            _summonIdleTimer = 0f;
 
             int idleWidth = _idleSpriteSheet.Width / 4;
             int idleHeight = _idleSpriteSheet.Height;
@@ -169,8 +170,9 @@ namespace Monogame___Final_Project
                 {
                     _isSummoning = false;
                     _currentSmnFrame = 0;
-                    _position = new Vector2(390, 200);
+                    _position = new Vector2(290, 100);
                 }
+                
             }
 
             if (_spawnTimer >= _attackDelay && !_isAttacking && !_hasAttacked)
@@ -211,12 +213,12 @@ namespace Monogame___Final_Project
             }
             else
             {
-                if (_position.X < 250)
+                if (_position.X < 200)
                 {
                     _speed = Vector2.Zero;
                     SetAnimation("idle");
                 }
-                else if (_speed != Vector2.Zero && _summonIdleTimer > 1)
+                else if (_speed != Vector2.Zero && _summonIdleTimer > 2)
                 {
                     if (!_isSummoning)
                         _position += _speed;
@@ -270,13 +272,13 @@ namespace Monogame___Final_Project
         {
             if (_isSummoning && _summonerDelayTimer > 4)
             {
-                spriteBatch.Draw(_summonFrames[_currentSmnFrame], _summonLocation, null, Color.White, 0, new Vector2(0, 0), 3, SpriteEffects.None, 0);
+                spriteBatch.Draw(_summonFrames[_currentSmnFrame], _summonLocation, null, Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
             }
 
 
             if (_currentAnimationFrames.Count > 0)
             {
-                spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _position, null, Color.White, 0, new Vector2(0, 0), 3, SpriteEffects.None, 0);
+                spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _position, null, Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
             }
 
         }
