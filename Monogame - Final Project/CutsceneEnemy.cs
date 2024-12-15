@@ -131,7 +131,7 @@ namespace Monogame___Final_Project
 
         }
 
-        public void TriggerAttack()
+        public void Attack()
         {
             if (!_isAttacking && !_hasAttacked)
             {
@@ -175,7 +175,7 @@ namespace Monogame___Final_Project
 
             if (_spawnTimer >= _attackDelay && !_isAttacking && !_hasAttacked)
             {
-                TriggerAttack();
+                Attack();
             }
 
             if (_isAttacking)
