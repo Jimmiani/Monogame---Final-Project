@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -17,6 +18,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song hauntedHouseSong;
+        SoundEffect thunderEffect;
 
         // Backgrounds
         Texture2D introTexture, forestTexture, blackTexture, mansion1Texture;
@@ -75,6 +77,7 @@ namespace Monogame___Final_Project
 
             // Audio
             hauntedHouseSong = Content.Load<Song>("Audio/hauntedHouse");
+            thunderEffect = Content.Load<SoundEffect>("Audio/thunderEffect");
 
             // Backgrounds
             introTexture = Content.Load<Texture2D>("Backgrounds/hauntedIntro");
@@ -124,6 +127,7 @@ namespace Monogame___Final_Project
                         playBtnRect = new Rectangle(((window.Width / 2) - (playBtnTexture.Width / 2)) + 5, 355, playBtnTexture.Width - 10, playBtnTexture.Height - 8);
                         if (mouseState.LeftButton == ButtonState.Released)
                         {
+                            thunderEffect.Play();
                             screen = Screen.Forest;
                             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
                         }
@@ -182,7 +186,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 if (mansionSeconds > 3)
                 {
-                    _spriteBatch.Draw(mansion1Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), Color.White);
+                    _spriteBatch.Draw(mansion1Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 }
             }
 

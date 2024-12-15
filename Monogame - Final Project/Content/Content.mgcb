@@ -19,6 +19,12 @@
 /processorParam:Quality=Best
 /build:Audio/hauntedHouse.mp3
 
+#begin Audio/thunderEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/thunderEffect.wav
+
 #begin Backgrounds/blackBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
