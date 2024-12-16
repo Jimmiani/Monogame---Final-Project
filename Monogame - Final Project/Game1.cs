@@ -17,8 +17,9 @@ namespace Monogame___Final_Project
         float forestSeconds, mansionSeconds;
 
         // Audio
-        Song hauntedHouseSong;
+        Song currentSong, hauntedHouseSong, spookySong;
         SoundEffect thunderEffect;
+        SoundEffectInstance thunderInstance;
 
         // Backgrounds
         Texture2D introTexture, forestTexture, blackTexture, mansion1Texture;
@@ -40,6 +41,7 @@ namespace Monogame___Final_Project
         enum Screen
         {
             Intro,
+            IntroDark,
             Forest,
             Mansion1,
         }
@@ -65,13 +67,15 @@ namespace Monogame___Final_Project
 
             base.Initialize();
 
-            
+            currentSong = spookySong;
+            thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, GraphicsDevice, new Vector2(1, 0));
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0));
             mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, new Vector2(300, 150));
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
+
         }
 
         protected override void LoadContent()
@@ -81,6 +85,8 @@ namespace Monogame___Final_Project
             // Audio
             hauntedHouseSong = Content.Load<Song>("Audio/hauntedHouse");
             thunderEffect = Content.Load<SoundEffect>("Audio/thunderEffect");
+            spookySong = Content.Load<Song>("Audio/spookyMusic");
+            
 
             // Backgrounds
             introTexture = Content.Load<Texture2D>("Backgrounds/hauntedIntro");
@@ -117,7 +123,7 @@ namespace Monogame___Final_Project
 
             if (MediaPlayer.State == MediaState.Stopped)
             {
-                MediaPlayer.Play(hauntedHouseSong);
+                MediaPlayer.Play(currentSong);
             }
 
             if (screen == Screen.Intro)
@@ -130,8 +136,8 @@ namespace Monogame___Final_Project
                         playBtnRect = new Rectangle(((window.Width / 2) - (playBtnTexture.Width / 2)) + 5, 355, playBtnTexture.Width - 10, playBtnTexture.Height - 8);
                         if (mouseState.LeftButton == ButtonState.Released)
                         {
-                            thunderEffect.Play();
-                            screen = Screen.Forest;
+                            thunderInstance.Play();
+                            screen = Screen.IntroDark;
                             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
                         }
                     }
@@ -144,19 +150,28 @@ namespace Monogame___Final_Project
                     }
                 }
             }
+            else if (screen == Screen.IntroDark)
+            {
+                if (thunderInstance.State == SoundState.Stopped)
+                {
+                    screen = Screen.Forest;
+                }
+            }
 
-            if (screen == Screen.Forest)
+            else if (screen == Screen.Forest)
             {
                 forestSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 cutsceneCharacter.Update(gameTime);
                 cutsceneEnemy.Update(gameTime);
                 if (forestSeconds >= 19)
                 {
+                    currentSong = hauntedHouseSong;
+                    MediaPlayer.Play(currentSong);
                     screen = Screen.Mansion1;
                 }
             }
 
-            if (screen == Screen.Mansion1)
+            else if (screen == Screen.Mansion1)
             {
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 mainCharacter.Update(gameTime);
@@ -178,7 +193,10 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(playBtnTexture, playBtnRect, Color.White);
                 _spriteBatch.DrawString(titleFont, "The Eldritch", new Vector2(20, 20), Color.DimGray, 0, new Vector2(0, 0), 0.55f, SpriteEffects.None, 0);
                 _spriteBatch.DrawString(titleFont, "Gloom", new Vector2(190, 120), Color.ForestGreen, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                
             }
+            else if (screen == Screen.IntroDark)
+                _spriteBatch.Draw(blackTexture, new Vector2(0, 0), Color.White);
             else if (screen == Screen.Forest)
             {
                 _spriteBatch.Draw(forestTexture, new Vector2(0, 0), Color.White);
