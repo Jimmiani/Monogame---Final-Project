@@ -641,3 +641,15 @@
 /processorParam:TextureFormat=Color
 /build:Spritesheets/Main Character/Owlet_Monster.png
 
+#begin Spritesheets/Main Character/rectangle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Main Character/rectangle.png
+

@@ -20,6 +20,7 @@ namespace Monogame___Final_Project
         private int _currentFrame;
         private Vector2 _speed;
         private Vector2 _location;
+        private Rectangle _hitbox;
         private float _frameTimer;
         private float _animationSpeed;
         private bool _facingLeft;
@@ -29,6 +30,7 @@ namespace Monogame___Final_Project
             _runSpriteSheet = runSpriteSheet;
             _speed = speed;
             _location = location;
+            
             _idleFrames = new List<Texture2D>();
             _runFrames = new List<Texture2D>();
             _currentAnimationFrames = _idleFrames;
@@ -63,6 +65,17 @@ namespace Monogame___Final_Project
                 _runFrames.Add(cropTexture);
             }
             _location = new Vector2(254, 285);
+            _hitbox = new Rectangle();
+            _hitbox.Size = new Point(runWidth, 20);
+            CalculateHitbox();
+        }
+        public void CollisionCheck(Rectangle barrier)
+        {
+            
+            if (_hitbox.Intersects(barrier))
+            {
+                UndoMove();
+            }
         }
         public void SetAnimation(string animationName)
         {
@@ -104,10 +117,9 @@ namespace Monogame___Final_Project
                 _frameTimer = 0f;
             }
         }
-        private void Move(GameTime gametime)
+        private void Move(GameTime gametime, List<Rectangle> barriers)
         {
-            _location.X += (int)_speed.X;
-            _location.Y += (int)_speed.Y;
+            
 
             _speed = Vector2.Zero;
 
@@ -132,14 +144,29 @@ namespace Monogame___Final_Project
                 _speed.X += 2;
                 _facingLeft = false;
             }
+            _location += _speed;
+            CalculateHitbox();
+            foreach (Rectangle barrier in barriers)
+                CollisionCheck(barrier);
+
+
         }
+
+        private void CalculateHitbox()
+        {
+            _hitbox.X = (int)Math.Round(_location.X + 15);
+            _hitbox.Y = (int)Math.Round(_location.Y + _currentAnimationFrames[_currentFrame].Height * 2 - _hitbox.Height);
+        }
+
         private void UndoMove()
         {
+            _location -= _speed;
+            CalculateHitbox();
             
         }
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, List<Rectangle> barriers)
         {
-            Move(gameTime);
+            Move(gameTime, barriers);
             HandleSpritesheets(gameTime);
         }
         public void Draw(SpriteBatch spriteBatch)
@@ -151,7 +178,12 @@ namespace Monogame___Final_Project
                 spriteEffect = SpriteEffects.FlipHorizontally;
             }
 
-            spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _location, null, Color.White, 0f, new Vector2(0, 0), 2, spriteEffect, 0f);
+            spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _location, null, Color.White, 0f, new Vector2(0, 0), 2, spriteEffect,0f);
+        }
+
+        public Rectangle HitBox
+        {
+            get { return _hitbox; }
         }
     }
 }

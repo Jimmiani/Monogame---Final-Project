@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Monogame___Final_Project
@@ -35,6 +36,8 @@ namespace Monogame___Final_Project
         CutsceneCharacter cutsceneCharacter;
         CutsceneEnemy cutsceneEnemy;
         MainCharacter mainCharacter;
+        Texture2D hitTexture;
+        List<Rectangle> barriers;
         Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation, charTeleportAnimation, charRunAnimation;
 
 
@@ -55,14 +58,14 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
             forestSeconds = 0;
             mansionSeconds = 0;
-
+            barriers = new List<Rectangle>();
             
 
             base.Initialize();
@@ -109,7 +112,7 @@ namespace Monogame___Final_Project
             enemySmnAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Summon");
             charTeleportAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Teleport");
             charRunAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Run");
-
+            hitTexture = Content.Load<Texture2D>("Spritesheets/Main Character/rectangle");
         }
 
         protected override void Update(GameTime gameTime)
@@ -174,7 +177,7 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Mansion1)
             {
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                mainCharacter.Update(gameTime);
+                mainCharacter.Update(gameTime, barriers);
             }
 
             base.Update(gameTime);
@@ -210,6 +213,7 @@ namespace Monogame___Final_Project
                 {
                     _spriteBatch.Draw(mansion1Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                     mainCharacter.Draw(_spriteBatch);
+                    _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 }
             }
 
