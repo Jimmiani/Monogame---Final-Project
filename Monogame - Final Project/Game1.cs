@@ -37,8 +37,8 @@ namespace Monogame___Final_Project
         CutsceneEnemy cutsceneEnemy;
         MainCharacter mainCharacter;
         Texture2D hitTexture;
-        List<Rectangle> barriers;
-        Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation, charTeleportAnimation, charRunAnimation;
+        List<Rectangle> barriers1;
+        Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation, charTeleportAnimation, charRootAnimation, charRunAnimation;
 
 
         enum Screen
@@ -58,21 +58,21 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Intro;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
             forestSeconds = 0;
             mansionSeconds = 0;
-            barriers = new List<Rectangle>();
+            barriers1 = new List<Rectangle>();
             
 
             base.Initialize();
 
             currentSong = spookySong;
             thunderInstance = thunderEffect.CreateInstance();
-            cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, GraphicsDevice, new Vector2(1, 0));
+            cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0));
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0));
             mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, new Vector2(300, 150));
             cutsceneCharacter.SetAnimation("walk");
@@ -110,8 +110,9 @@ namespace Monogame___Final_Project
             enemyWalkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Walk");
             enemyAtkAnimation = Content.Load<Texture2D>("Spritesheets/Enemy/Attack");
             enemySmnAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Summon");
-            charTeleportAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Teleport");
+            charTeleportAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Blink");
             charRunAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Run");
+            charRootAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Root");
             hitTexture = Content.Load<Texture2D>("Spritesheets/Main Character/rectangle");
         }
 
@@ -177,7 +178,7 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Mansion1)
             {
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                mainCharacter.Update(gameTime, barriers);
+                mainCharacter.Update(gameTime, barriers1);
             }
 
             base.Update(gameTime);

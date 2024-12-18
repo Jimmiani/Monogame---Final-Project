@@ -497,6 +497,18 @@
 /processorParam:TextureFormat=Color
 /build:Spritesheets/Enemy/Walk.png
 
+#begin Spritesheets/Magic Effects/Blink.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Magic Effects/Blink.png
+
 #begin Spritesheets/Magic Effects/Fire Beam.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -520,6 +532,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Spritesheets/Magic Effects/Purple Aura.png
+
+#begin Spritesheets/Magic Effects/Root.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spritesheets/Magic Effects/Root.png
 
 #begin Spritesheets/Magic Effects/Summon.png
 /importer:TextureImporter

@@ -61,11 +61,11 @@ namespace Monogame___Final_Project
             _attackTimer = 0f;
             _speed = speed;
             _spawnTimer = 0f;
-            _attackDelay = 6f;
+            _attackDelay = 5f;
             _hasAttacked = false;
             _summonTimer = 0f;
             _summonDelayTimer = 0f;
-            _summonDelay = 10;
+            _summonDelay = 7;
             _summonLocation = new Vector2(420, 200);
             _summonerDelayTimer = 0f;
             _summonIdleTimer = 0f;
@@ -213,7 +213,7 @@ namespace Monogame___Final_Project
             }
             else
             {
-                if (_position.X < 200)
+                if (_position.X < 220)
                 {
                     _speed = Vector2.Zero;
                     SetAnimation("idle");
@@ -270,7 +270,7 @@ namespace Monogame___Final_Project
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_isSummoning && _summonerDelayTimer > 4)
+            if (_isSummoning && _summonerDelayTimer > 2.5f)
             {
                 spriteBatch.Draw(_summonFrames[_currentSmnFrame], _summonLocation, null, Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
             }

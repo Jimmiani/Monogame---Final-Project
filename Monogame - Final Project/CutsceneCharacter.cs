@@ -13,12 +13,15 @@ namespace Monogame___Final_Project
         private Texture2D _idleSpriteSheet;
         private Texture2D _walkSpriteSheet;
         private Texture2D _teleportSpriteSheet;
+        private Texture2D _rootSpritesheet;
         private List<Texture2D> _idleFrames;
         private List<Texture2D> _walkFrames;
         private List<Texture2D> _teleportFrames;
+        private List<Texture2D> _rootFrames;
         private List<Texture2D> _currentAnimationFrames;
         private int _currentFrame;
         private int _currentTeleFrame;
+        private int _currentRootFrame;
         private float _frameTimer;
         private float _animationSpeed;
         private float _teleportTimer;
@@ -28,15 +31,19 @@ namespace Monogame___Final_Project
         private bool _hasTeleported;
         private bool _isTeleporting;
         private float _teleportFrameTimer;
+        private float _rootTimer;
+        private float _rootFrameTimer;
 
-        public CutsceneCharacter(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D teleportSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed)
+        public CutsceneCharacter(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D teleportSpriteSheet, Texture2D rootSpritesheet, GraphicsDevice graphicsDevice, Vector2 speed)
         {
             _idleSpriteSheet = idleSpriteSheet;
             _walkSpriteSheet = walkSpriteSheet;
             _teleportSpriteSheet = teleportSpriteSheet;
+            _rootSpritesheet = rootSpritesheet;
             _idleFrames = new List<Texture2D>();
             _walkFrames = new List<Texture2D>();
             _teleportFrames = new List<Texture2D>();
+            _rootFrames = new List<Texture2D>();
             _currentAnimationFrames = _idleFrames;
             _currentFrame = 0;
             _currentTeleFrame = 0;
@@ -44,10 +51,13 @@ namespace Monogame___Final_Project
             _animationSpeed = 0.1f;
             _speed = speed;
             _teleportTimer = 0f;
-            _teleportDelay = 16.5f;
+            _teleportDelay = 14.3f;
             _hasTeleported = false;
             _isTeleporting = false;
             _teleportFrameTimer = 0f;
+            _rootTimer = 0f;
+            _currentRootFrame = 0;
+            _rootFrameTimer = 0f;
 
 
             int idleWidth = _idleSpriteSheet.Width / 4;
@@ -78,10 +88,10 @@ namespace Monogame___Final_Project
             }
 
 
-            int teleportWidth = _teleportSpriteSheet.Width / 8;
+            int teleportWidth = _teleportSpriteSheet.Width / 6;
             int teleportHeight = _teleportSpriteSheet.Height;
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 6; i++)
             {
                 Rectangle sourceRect = new Rectangle(i * teleportWidth, 0, teleportWidth, teleportHeight);
                 Texture2D cropTexture = new Texture2D(graphicsDevice, teleportWidth, teleportHeight);
@@ -91,6 +101,20 @@ namespace Monogame___Final_Project
                 _teleportFrames.Add(cropTexture);
             }
 
+            int rootWidth = _rootSpritesheet.Width / 8;
+            int rootHeight = _rootSpritesheet.Height;
+
+            for (int i = 0; i < 6; i++)
+            {
+                Rectangle sourceRect = new Rectangle(i * rootWidth, 0, rootWidth, rootHeight);
+                Texture2D cropTexture = new Texture2D(graphicsDevice, rootWidth, rootHeight);
+                Color[] data = new Color[rootWidth * rootHeight];
+                _rootSpritesheet.GetData(0, sourceRect, data, 0, data.Length);
+                cropTexture.SetData(data);
+                _rootFrames.Add(cropTexture);
+            }
+
+
             _position = new Vector2(-walkWidth * 3, 480 - (walkHeight * 3));
             
         }
@@ -98,12 +122,26 @@ namespace Monogame___Final_Project
         {
             _frameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             _teleportTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            
+            _rootTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             if (_teleportTimer > _teleportDelay && !_hasTeleported)
             {
                 _isTeleporting = true;
             }
 
+            if (_rootTimer > _teleportDelay - 1.8)
+            {
+                _rootFrameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_rootFrameTimer >= _animationSpeed)
+                {
+                    _currentRootFrame++;
+                    if (_currentRootFrame >= _rootFrames.Count)
+                    {
+                        _currentRootFrame = _rootFrames.Count - 1;
+                    }
+                    _rootFrameTimer = 0;
+                }
+            }
 
             if (_isTeleporting)
             {
@@ -141,7 +179,7 @@ namespace Monogame___Final_Project
                 _frameTimer = 0f;
             }
 
-            if (_position.X > 200)
+            if (_position.X > 130)
             {
                 _speed = Vector2.Zero;
             }
@@ -171,13 +209,17 @@ namespace Monogame___Final_Project
         {
             if (_isTeleporting)
             {
-                spriteBatch.Draw(_teleportFrames[_currentTeleFrame], new Vector2 (135, 275), null, Color.White, 0f, new Vector2(0, 0), 3, SpriteEffects.None, 0f);
+                spriteBatch.Draw(_teleportFrames[_currentTeleFrame], new Vector2 (75, 275), null, Color.White, 0f, new Vector2(0, 0), 3, SpriteEffects.None, 0f);
             }
-
 
             if (_currentAnimationFrames.Count > 0)
             {
                 spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _position, null, Color.White, 0f, new Vector2(0, 0), 3, SpriteEffects.None, 0f);
+            }
+
+            if (_rootTimer > _teleportDelay - 1.8f)
+            {
+                spriteBatch.Draw(_rootFrames[_currentRootFrame], new Vector2(0, 127), null, Color.White, 0f, new Vector2(0, 0), 5, SpriteEffects.None, 0f);
             }
         }
     }
