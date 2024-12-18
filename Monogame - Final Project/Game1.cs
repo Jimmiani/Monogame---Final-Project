@@ -23,7 +23,7 @@ namespace Monogame___Final_Project
         SoundEffectInstance thunderInstance;
 
         // Backgrounds
-        Texture2D introTexture, forestTexture, blackTexture, mansion1Texture;
+        Texture2D introTexture, forestTexture, blackTexture, mansion1Texture, mansion2Texture, mansion3Texture, mansion4Texture, mansion5Texture;
 
         // Buttons
         Texture2D playBtnTexture;
@@ -47,6 +47,7 @@ namespace Monogame___Final_Project
             IntroDark,
             Forest,
             Mansion1,
+            Mansion2
         }
         Screen screen;
         public Game1()
@@ -58,7 +59,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -66,6 +67,16 @@ namespace Monogame___Final_Project
             forestSeconds = 0;
             mansionSeconds = 0;
             barriers1 = new List<Rectangle>();
+            barriers1.Add(new Rectangle(145, 175, 55, 270));
+            barriers1.Add(new Rectangle(185, 415, 83, 52));
+            barriers1.Add(new Rectangle(185, 165, 55, 30));
+            barriers1.Add(new Rectangle(239, 165, 106, 65));
+            barriers1.Add(new Rectangle(230, 465, 375, 25));
+            barriers1.Add(new Rectangle(333, 215, 106, 85));
+            barriers1.Add(new Rectangle(350, 416, 50, 74));
+            barriers1.Add(new Rectangle(400, 412, 131, 78));
+            barriers1.Add(new Rectangle(591, 280, 39, 210));
+            barriers1.Add(new Rectangle(447, 290, 163, 35));
             
 
             base.Initialize();
@@ -96,6 +107,7 @@ namespace Monogame___Final_Project
             forestTexture = Content.Load<Texture2D>("Backgrounds/forestBackground");
             blackTexture = Content.Load<Texture2D>("Backgrounds/blackBackground");
             mansion1Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom1");
+            mansion2Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom2");
 
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -216,6 +228,10 @@ namespace Monogame___Final_Project
                     mainCharacter.Draw(_spriteBatch);
                     _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 }
+            }
+            else if (screen == Screen.Mansion2)
+            {
+                _spriteBatch.Draw(mansion2Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), Color.White);
             }
 
 
