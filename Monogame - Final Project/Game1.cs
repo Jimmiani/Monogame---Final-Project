@@ -32,12 +32,19 @@ namespace Monogame___Final_Project
         // Fonts
         SpriteFont titleFont;
 
+        // Images
+        Rectangle eIndicator;
+
         // Sprite sheet
         CutsceneCharacter cutsceneCharacter;
         CutsceneEnemy cutsceneEnemy;
         MainCharacter mainCharacter;
         Texture2D hitTexture;
         List<Rectangle> barriers1;
+        List<Rectangle> barriers2;
+        List<Rectangle> barriers3;
+        List<Rectangle> barriers4;
+        List<Rectangle> barriers5;
         Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation, charTeleportAnimation, charRootAnimation, charRunAnimation;
 
 
@@ -59,7 +66,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Mansion2;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -77,6 +84,8 @@ namespace Monogame___Final_Project
             barriers1.Add(new Rectangle(400, 412, 131, 78));
             barriers1.Add(new Rectangle(591, 280, 39, 210));
             barriers1.Add(new Rectangle(447, 290, 163, 35));
+
+            barriers2 = new List<Rectangle>();
             
 
             base.Initialize();
@@ -193,6 +202,11 @@ namespace Monogame___Final_Project
                 mainCharacter.Update(gameTime, barriers1);
             }
 
+            else if (screen == Screen.Mansion2)
+            {
+                mainCharacter.Update(gameTime, barriers2);
+            }
+
             base.Update(gameTime);
         }
 
@@ -231,7 +245,9 @@ namespace Monogame___Final_Project
             }
             else if (screen == Screen.Mansion2)
             {
-                _spriteBatch.Draw(mansion2Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), Color.White);
+                _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(mansion2Texture, new Vector2(0, 0), Color.White);
+                mainCharacter.Draw(_spriteBatch);
             }
 
 

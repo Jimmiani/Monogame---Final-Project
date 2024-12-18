@@ -245,6 +245,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/cobwebs.png
 
+#begin Images/eIndicator.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/eIndicator.png
+
 #begin Images/fireplace.png
 /importer:TextureImporter
 /processor:TextureProcessor
