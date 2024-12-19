@@ -15,6 +15,7 @@ namespace Monogame___Final_Project
 
         Rectangle window;
         MouseState mouseState, prevMouseState;
+        KeyboardState keyboardState, prevKeyboardState;
         float forestSeconds, mansionSeconds;
 
         // Audio
@@ -29,11 +30,17 @@ namespace Monogame___Final_Project
         Texture2D playBtnTexture;
         Rectangle playBtnRect;
 
+        // Doors
+        Rectangle mansion1Door;
+
         // Fonts
         SpriteFont titleFont;
 
         // Images
-        Rectangle eIndicator;
+        Texture2D eIndicatorTexture;
+        Rectangle eIndicatorRect;
+        bool eIsVisible;
+        Texture2D hauntedStairs;
 
         // Sprite sheet
         CutsceneCharacter cutsceneCharacter;
@@ -66,14 +73,17 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion2;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
             forestSeconds = 0;
             mansionSeconds = 0;
+            eIndicatorRect = new Rectangle(580, 310, 54, 48);
+            eIsVisible = false;
             barriers1 = new List<Rectangle>();
+            mansion1Door = new Rectangle(560, 375, 40, 55);
             barriers1.Add(new Rectangle(145, 175, 55, 270));
             barriers1.Add(new Rectangle(185, 415, 83, 52));
             barriers1.Add(new Rectangle(185, 165, 55, 30));
@@ -86,6 +96,10 @@ namespace Monogame___Final_Project
             barriers1.Add(new Rectangle(447, 290, 163, 35));
 
             barriers2 = new List<Rectangle>();
+            barriers2.Add(new Rectangle(0, 325, 415, 45));
+            barriers2.Add(new Rectangle(0, 280, 30, 50));
+            barriers2.Add(new Rectangle(31, 288, 33, 42));
+            barriers2.Add(new Rectangle(63, 296, 31, 34));
             
 
             base.Initialize();
@@ -121,6 +135,10 @@ namespace Monogame___Final_Project
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
 
+            // Images
+            eIndicatorTexture = Content.Load<Texture2D>("Images/eIndicator");
+            hauntedStairs = Content.Load<Texture2D>("Images/hauntedRoom2Stairs");
+
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
 
@@ -144,6 +162,8 @@ namespace Monogame___Final_Project
 
             prevMouseState = mouseState;
             mouseState = Mouse.GetState();
+            prevKeyboardState = keyboardState;
+            keyboardState = Keyboard.GetState();
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
             if (MediaPlayer.State == MediaState.Stopped)
@@ -200,6 +220,18 @@ namespace Monogame___Final_Project
             {
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 mainCharacter.Update(gameTime, barriers1);
+                if (mainCharacter.HitBox.Intersects(mansion1Door))
+                {
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Mansion2;
+                        mainCharacter.Location = new Vector2(40, 200);
+
+                    }
+                }
+                else if (!mainCharacter.HitBox.Intersects(mansion1Door))
+                    eIsVisible = false;
             }
 
             else if (screen == Screen.Mansion2)
@@ -241,6 +273,10 @@ namespace Monogame___Final_Project
                     _spriteBatch.Draw(mansion1Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                     mainCharacter.Draw(_spriteBatch);
                     _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
+                    if (eIsVisible)
+                    {
+                        _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
+                    }
                 }
             }
             else if (screen == Screen.Mansion2)
@@ -248,6 +284,8 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(mansion2Texture, new Vector2(0, 0), Color.White);
                 mainCharacter.Draw(_spriteBatch);
+                _spriteBatch.Draw(hauntedStairs, new Vector2(0, 255), Color.White);
+                _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
             }
 
 

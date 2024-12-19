@@ -185,5 +185,11 @@ namespace Monogame___Final_Project
         {
             get { return _hitbox; }
         }
+
+        public Vector2 Location
+        {
+            get { return _location; }
+            set { _location = value; }
+        }
     }
 }
