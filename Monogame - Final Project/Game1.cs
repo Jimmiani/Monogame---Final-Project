@@ -40,7 +40,7 @@ namespace Monogame___Final_Project
         Texture2D eIndicatorTexture;
         Rectangle eIndicatorRect;
         bool eIsVisible;
-        Texture2D hauntedStairs;
+        Texture2D hauntedStairs, hauntedRoom2Door;
 
         // Sprite sheet
         CutsceneCharacter cutsceneCharacter;
@@ -86,7 +86,7 @@ namespace Monogame___Final_Project
             mansion1Door = new Rectangle(560, 375, 40, 55);
             barriers1.Add(new Rectangle(145, 175, 55, 270));
             barriers1.Add(new Rectangle(185, 415, 83, 52));
-            barriers1.Add(new Rectangle(185, 165, 55, 30));
+            barriers1.Add(new Rectangle(185, 165, 55, 37));
             barriers1.Add(new Rectangle(239, 165, 106, 65));
             barriers1.Add(new Rectangle(230, 465, 375, 25));
             barriers1.Add(new Rectangle(333, 215, 106, 85));
@@ -97,10 +97,22 @@ namespace Monogame___Final_Project
 
             barriers2 = new List<Rectangle>();
             barriers2.Add(new Rectangle(0, 325, 415, 45));
-            barriers2.Add(new Rectangle(0, 280, 30, 50));
-            barriers2.Add(new Rectangle(31, 288, 33, 42));
-            barriers2.Add(new Rectangle(63, 296, 31, 34));
-            
+            barriers2.Add(new Rectangle(0, 290, 30, 50));
+            barriers2.Add(new Rectangle(31, 298, 33, 42));
+            barriers2.Add(new Rectangle(63, 306, 31, 34));
+            barriers2.Add(new Rectangle(95, 318, 20, 22));
+            barriers2.Add(new Rectangle(415, 356, 128, 31));
+            barriers2.Add(new Rectangle(500, 388, 43, 112));
+            barriers2.Add(new Rectangle(520, 485, 280, 15));
+            barriers2.Add(new Rectangle(768, 0, 32, 500));
+            barriers2.Add(new Rectangle(736, 230, 64, 91));
+            barriers2.Add(new Rectangle(752, 101, 48, 129));
+            barriers2.Add(new Rectangle(514, 101, 141, 112));
+            barriers2.Add(new Rectangle(620, 0, 180, 101));
+            barriers2.Add(new Rectangle(576, 213, 31, 16));
+            barriers2.Add(new Rectangle(256, 149, 257, 16));
+            barriers2.Add(new Rectangle(159, 120, 97, 29));
+
 
             base.Initialize();
 
@@ -108,7 +120,7 @@ namespace Monogame___Final_Project
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0));
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0));
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, new Vector2(300, 150));
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, new Vector2(254, 285));
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
@@ -138,6 +150,7 @@ namespace Monogame___Final_Project
             // Images
             eIndicatorTexture = Content.Load<Texture2D>("Images/eIndicator");
             hauntedStairs = Content.Load<Texture2D>("Images/hauntedRoom2Stairs");
+            hauntedRoom2Door = Content.Load<Texture2D>("Images/hauntedDoor2");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -226,7 +239,7 @@ namespace Monogame___Final_Project
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
                         screen = Screen.Mansion2;
-                        mainCharacter.Location = new Vector2(40, 200);
+                        mainCharacter.Location = new Vector2(17, 210);
 
                     }
                 }
@@ -285,6 +298,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(mansion2Texture, new Vector2(0, 0), Color.White);
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hauntedStairs, new Vector2(0, 255), Color.White);
+                _spriteBatch.Draw(hauntedRoom2Door, new Vector2(640, 412), Color.White);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
             }
 

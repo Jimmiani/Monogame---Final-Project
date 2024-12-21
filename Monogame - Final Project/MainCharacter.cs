@@ -66,7 +66,7 @@ namespace Monogame___Final_Project
             }
             _location = new Vector2(254, 285);
             _hitbox = new Rectangle();
-            _hitbox.Size = new Point(runWidth, 20);
+            _hitbox.Size = new Point(runWidth, 10);
             CalculateHitbox();
         }
         public void CollisionCheck(Rectangle barrier)
