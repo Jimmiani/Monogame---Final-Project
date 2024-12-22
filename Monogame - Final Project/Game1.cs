@@ -31,7 +31,7 @@ namespace Monogame___Final_Project
         Rectangle playBtnRect;
 
         // Doors
-        Rectangle mansion1Door;
+        Rectangle mansion1Door, mansion2Door1, mansion2Door3;
 
         // Fonts
         SpriteFont titleFont;
@@ -61,7 +61,10 @@ namespace Monogame___Final_Project
             IntroDark,
             Forest,
             Mansion1,
-            Mansion2
+            Mansion2,
+            Mansion3,
+            Mansion4,
+            Mansion5
         }
         Screen screen;
         public Game1()
@@ -73,7 +76,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Intro;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -84,6 +87,8 @@ namespace Monogame___Final_Project
             eIsVisible = false;
             barriers1 = new List<Rectangle>();
             mansion1Door = new Rectangle(560, 375, 40, 55);
+            mansion2Door1 = new Rectangle(0, 228, 15, 52);
+            mansion2Door3 = new Rectangle(160, 150, 60, 15);
             barriers1.Add(new Rectangle(145, 175, 55, 270));
             barriers1.Add(new Rectangle(185, 415, 83, 52));
             barriers1.Add(new Rectangle(185, 165, 55, 37));
@@ -96,6 +101,7 @@ namespace Monogame___Final_Project
             barriers1.Add(new Rectangle(447, 290, 163, 35));
 
             barriers2 = new List<Rectangle>();
+            barriers2.Add(new Rectangle(0, 0, 0, 800));
             barriers2.Add(new Rectangle(0, 325, 415, 45));
             barriers2.Add(new Rectangle(0, 290, 30, 50));
             barriers2.Add(new Rectangle(31, 298, 33, 42));
@@ -112,7 +118,14 @@ namespace Monogame___Final_Project
             barriers2.Add(new Rectangle(576, 213, 31, 16));
             barriers2.Add(new Rectangle(256, 149, 257, 16));
             barriers2.Add(new Rectangle(159, 120, 97, 29));
+            barriers2.Add(new Rectangle(84, 128, 75, 36));
+            barriers2.Add(new Rectangle(50, 110, 45, 119));
+            barriers2.Add(new Rectangle(0, 165, 31, 48));
+            barriers2.Add(new Rectangle(32, 185, 31, 34));
+            barriers2.Add(new Rectangle(96, 194, 19, 43));
+            barriers2.Add(new Rectangle(312, 262, 67, 30));
 
+            barriers3 = new List<Rectangle>();
 
             base.Initialize();
 
@@ -143,6 +156,7 @@ namespace Monogame___Final_Project
             blackTexture = Content.Load<Texture2D>("Backgrounds/blackBackground");
             mansion1Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom1");
             mansion2Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom2");
+            mansion3Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom3");
 
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -235,6 +249,7 @@ namespace Monogame___Final_Project
                 mainCharacter.Update(gameTime, barriers1);
                 if (mainCharacter.HitBox.Intersects(mansion1Door))
                 {
+                    eIndicatorRect = new Rectangle(580, 310, 54, 48);
                     eIsVisible = true;
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
@@ -250,6 +265,41 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Mansion2)
             {
                 mainCharacter.Update(gameTime, barriers2);
+                
+                if (!mainCharacter.HitBox.Intersects(mansion2Door1) || !mainCharacter.HitBox.Intersects(mansion2Door3))
+                    eIsVisible = false;
+                
+                // Room 1
+                if (mainCharacter.HitBox.Intersects(mansion2Door1))
+                {
+                    eIndicatorRect = new Rectangle(2, 150, 54, 48);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Mansion1;
+                        mainCharacter.Location = new Vector2(518, 339);
+
+                    }
+                }
+                
+
+                // Room 3
+                if (mainCharacter.HitBox.Intersects(mansion2Door3))
+                {
+                    eIndicatorRect = new Rectangle(213, 59, 54, 48);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Mansion3;
+                        mainCharacter.Location = new Vector2(497, 380);
+
+                    }
+                }
+            }
+
+            else if (screen == Screen.Mansion3)
+            {
+                mainCharacter.Update(gameTime, barriers3);
             }
 
             base.Update(gameTime);
@@ -299,6 +349,17 @@ namespace Monogame___Final_Project
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hauntedStairs, new Vector2(0, 255), Color.White);
                 _spriteBatch.Draw(hauntedRoom2Door, new Vector2(640, 412), Color.White);
+                _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
+                if (eIsVisible)
+                {
+                    _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
+                }
+            }
+            else if (screen == Screen.Mansion3)
+            {
+                _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(mansion3Texture, new Vector2((window.Width / 2) - (mansion3Texture.Width / 2), (window.Height / 2) - (mansion3Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+                mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
             }
 
