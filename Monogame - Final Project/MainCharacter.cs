@@ -64,7 +64,7 @@ namespace Monogame___Final_Project
                 cropTexture.SetData(data);
                 _runFrames.Add(cropTexture);
             }
-            _location = new Vector2(254, 285);
+            //_location = new Vector2(254, 285);
             _hitbox = new Rectangle();
             _hitbox.Size = new Point(runWidth, 10);
             CalculateHitbox();

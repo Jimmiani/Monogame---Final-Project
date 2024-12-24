@@ -42,6 +42,9 @@ namespace Monogame___Final_Project
         bool eIsVisible;
         Texture2D hauntedStairs, hauntedRoom2Door;
 
+        // Locations
+        Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
+
         // Sprite sheet
         CutsceneCharacter cutsceneCharacter;
         CutsceneEnemy cutsceneEnemy;
@@ -76,7 +79,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion3;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -85,10 +88,22 @@ namespace Monogame___Final_Project
             mansionSeconds = 0;
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
-            barriers1 = new List<Rectangle>();
+            
             mansion1Door = new Rectangle(560, 375, 40, 55);
             mansion2Door1 = new Rectangle(0, 228, 15, 52);
             mansion2Door3 = new Rectangle(160, 150, 60, 15);
+
+            mansion1Location1 = new Vector2(254, 285);
+            mansion1Location2 = new Vector2(518, 339);
+            mansion2Location1 = new Vector2(17, 210);
+            mansion2Location2 = new Vector2();
+            mansion2Location3 = new Vector2();
+            mansion2Location4 = new Vector2();
+            mansion3Location1 = new Vector2(497, 380);
+            mansion4Location1 = new Vector2();
+            mansion5Location1 = new Vector2();
+
+            barriers1 = new List<Rectangle>();
             barriers1.Add(new Rectangle(145, 175, 55, 270));
             barriers1.Add(new Rectangle(185, 415, 83, 52));
             barriers1.Add(new Rectangle(185, 165, 55, 37));
@@ -126,6 +141,14 @@ namespace Monogame___Final_Project
             barriers2.Add(new Rectangle(312, 262, 67, 30));
 
             barriers3 = new List<Rectangle>();
+            barriers3.Add(new Rectangle(0, 0, 800, 221));
+            barriers3.Add(new Rectangle(0, 0, 166, 500));
+            barriers3.Add(new Rectangle(0, 302, 406, 50));
+            barriers3.Add(new Rectangle(406, 306, 39, 155));
+            barriers3.Add(new Rectangle(410, 422, 75, 50));
+            barriers3.Add(new Rectangle(566, 387, 160, 100));
+            barriers3.Add(new Rectangle(581, 200, 100, 56));
+            barriers3.Add(new Rectangle(601, 256, 100, 166));
 
             base.Initialize();
 
@@ -133,7 +156,7 @@ namespace Monogame___Final_Project
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0));
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0));
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, new Vector2(254, 285));
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion3Location1);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
@@ -254,8 +277,7 @@ namespace Monogame___Final_Project
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
                         screen = Screen.Mansion2;
-                        mainCharacter.Location = new Vector2(17, 210);
-
+                        mainCharacter.Location = mansion2Location1;
                     }
                 }
                 else if (!mainCharacter.HitBox.Intersects(mansion1Door))
@@ -277,7 +299,7 @@ namespace Monogame___Final_Project
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
                         screen = Screen.Mansion1;
-                        mainCharacter.Location = new Vector2(518, 339);
+                        mainCharacter.Location = mansion1Location2;
 
                     }
                 }
@@ -291,8 +313,7 @@ namespace Monogame___Final_Project
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
                         screen = Screen.Mansion3;
-                        mainCharacter.Location = new Vector2(497, 380);
-
+                        mainCharacter.Location = mansion3Location1;
                     }
                 }
             }
