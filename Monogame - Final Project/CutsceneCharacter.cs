@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -33,13 +34,19 @@ namespace Monogame___Final_Project
         private float _teleportFrameTimer;
         private float _rootTimer;
         private float _rootFrameTimer;
+        private SoundEffect _rootEffect;
+        private bool _hasPlayedRoot;
+        private SoundEffect _teleportEffect;
+        private bool _hasPlayedTeleport;
 
-        public CutsceneCharacter(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D teleportSpriteSheet, Texture2D rootSpritesheet, GraphicsDevice graphicsDevice, Vector2 speed)
+        public CutsceneCharacter(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D teleportSpriteSheet, Texture2D rootSpritesheet, GraphicsDevice graphicsDevice, Vector2 speed, SoundEffect rootEffect, SoundEffect teleportEffect)
         {
             _idleSpriteSheet = idleSpriteSheet;
             _walkSpriteSheet = walkSpriteSheet;
             _teleportSpriteSheet = teleportSpriteSheet;
             _rootSpritesheet = rootSpritesheet;
+            _rootEffect = rootEffect;
+            _teleportEffect = teleportEffect;
             _idleFrames = new List<Texture2D>();
             _walkFrames = new List<Texture2D>();
             _teleportFrames = new List<Texture2D>();
@@ -58,6 +65,8 @@ namespace Monogame___Final_Project
             _rootTimer = 0f;
             _currentRootFrame = 0;
             _rootFrameTimer = 0f;
+            _hasPlayedRoot = false;
+            _hasPlayedTeleport = false;
 
 
             int idleWidth = _idleSpriteSheet.Width / 4;
@@ -124,9 +133,11 @@ namespace Monogame___Final_Project
             _teleportTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             _rootTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_teleportTimer > _teleportDelay && !_hasTeleported)
+            if (_teleportTimer > _teleportDelay && !_hasTeleported && !_hasPlayedTeleport)
             {
                 _isTeleporting = true;
+                _teleportEffect.Play();
+                _hasPlayedTeleport = true;
             }
 
             if (_rootTimer > _teleportDelay - 1.8)
@@ -140,6 +151,11 @@ namespace Monogame___Final_Project
                         _currentRootFrame = _rootFrames.Count - 1;
                     }
                     _rootFrameTimer = 0;
+                }
+                if (!_hasPlayedRoot)
+                {
+                    _rootEffect.Play();
+                    _hasPlayedRoot = true;
                 }
             }
 

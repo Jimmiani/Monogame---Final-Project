@@ -19,11 +19,29 @@
 /processorParam:Quality=Best
 /build:Audio/hauntedHouse.mp3
 
+#begin Audio/rootEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/rootEffect.wav
+
 #begin Audio/spookyMusic.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Audio/spookyMusic.mp3
+
+#begin Audio/summonEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/summonEffect.wav
+
+#begin Audio/teleportEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/teleportEffect.wav
 
 #begin Audio/thunderEffect.wav
 /importer:WavImporter

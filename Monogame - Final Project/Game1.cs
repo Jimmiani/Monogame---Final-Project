@@ -20,7 +20,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
-        SoundEffect thunderEffect;
+        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect;
         SoundEffectInstance thunderInstance;
 
         // Backgrounds
@@ -79,7 +79,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion3;
+            screen = Screen.Intro;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -154,9 +154,9 @@ namespace Monogame___Final_Project
 
             currentSong = spookySong;
             thunderInstance = thunderEffect.CreateInstance();
-            cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0));
-            cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0));
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion3Location1);
+            cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0), rootEffect, teleportEffect);
+            cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect);
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion1Location1);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
@@ -171,6 +171,9 @@ namespace Monogame___Final_Project
             hauntedHouseSong = Content.Load<Song>("Audio/hauntedHouse");
             thunderEffect = Content.Load<SoundEffect>("Audio/thunderEffect");
             spookySong = Content.Load<Song>("Audio/spookyMusic");
+            summonEffect = Content.Load<SoundEffect>("Audio/summonEffect");
+            rootEffect = Content.Load<SoundEffect>("Audio/rootEffect");
+            teleportEffect = Content.Load<SoundEffect>("Audio/teleportEffect");
             
 
             // Backgrounds

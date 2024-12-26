@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -39,13 +40,16 @@ namespace Monogame___Final_Project
         private float _summonDelayTimer;
         private float _summonerDelayTimer;
         private float _summonIdleTimer;
+        private SoundEffect _summonEffect;
+        private bool _hasPlayedSummon;
 
-        public CutsceneEnemy(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D attackSpriteSheet, Texture2D summonSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed)
+        public CutsceneEnemy(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D attackSpriteSheet, Texture2D summonSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed, SoundEffect summonEffect)
         {
             _idleSpriteSheet = idleSpriteSheet;
             _walkSpriteSheet = walkSpriteSheet;
             _attackSpriteSheet = attackSpriteSheet;
             _summonSpriteSheet = summonSpriteSheet;
+            _summonEffect = summonEffect;
 
             _idleFrames = new List<Texture2D>();
             _walkFrames = new List<Texture2D>();
@@ -65,10 +69,11 @@ namespace Monogame___Final_Project
             _hasAttacked = false;
             _summonTimer = 0f;
             _summonDelayTimer = 0f;
-            _summonDelay = 7;
+            _summonDelay = 6;
             _summonLocation = new Vector2(420, 200);
             _summonerDelayTimer = 0f;
             _summonIdleTimer = 0f;
+            _hasPlayedSummon = false;
 
             int idleWidth = _idleSpriteSheet.Width / 4;
             int idleHeight = _idleSpriteSheet.Height;
@@ -152,28 +157,33 @@ namespace Monogame___Final_Project
                 _summonIdleTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            if (_isSummoning)
+            if (_isSummoning && _summonerDelayTimer > 3f && _hasPlayedSummon == false)
             {
-                _summonTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _summonDelayTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _summonerDelayTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (_summonTimer >= 0.1f)
+                _summonEffect.Play();
+                _hasPlayedSummon = true;
+            }
+
+                if (_isSummoning)
                 {
-                    _currentSmnFrame++;
-                    _summonTimer = 0f;
-                    if (_currentSmnFrame >= _summonFrames.Count)
+                    _summonTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _summonDelayTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _summonerDelayTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (_summonTimer >= 0.1f)
                     {
+                        _currentSmnFrame++;
+                        _summonTimer = 0f;
+                        if (_currentSmnFrame >= _summonFrames.Count)
+                        {
+                            _currentSmnFrame = 0;
+                        }
+                    }
+                    if (_summonDelayTimer >= _summonDelay)
+                    {
+                        _isSummoning = false;
                         _currentSmnFrame = 0;
+                        _position = new Vector2(290, 100);
                     }
                 }
-                if (_summonDelayTimer >= _summonDelay)
-                {
-                    _isSummoning = false;
-                    _currentSmnFrame = 0;
-                    _position = new Vector2(290, 100);
-                }
-                
-            }
 
             if (_spawnTimer >= _attackDelay && !_isAttacking && !_hasAttacked)
             {
@@ -270,7 +280,7 @@ namespace Monogame___Final_Project
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_isSummoning && _summonerDelayTimer > 2.5f)
+            if (_isSummoning && _summonerDelayTimer > 3f)
             {
                 spriteBatch.Draw(_summonFrames[_currentSmnFrame], _summonLocation, null, Color.White, 0, new Vector2(0, 0), 4, SpriteEffects.None, 0);
             }
