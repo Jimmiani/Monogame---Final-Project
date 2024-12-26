@@ -20,7 +20,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
-        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect;
+        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect;
         SoundEffectInstance thunderInstance;
 
         // Backgrounds
@@ -31,7 +31,7 @@ namespace Monogame___Final_Project
         Rectangle playBtnRect;
 
         // Doors
-        Rectangle mansion1Door, mansion2Door1, mansion2Door3;
+        Rectangle mansion1Door, mansion2Door1, mansion2Door3, mansion2Door4, mansion2Door5, mansion3Door, mansion4Door, mansion5Door;
 
         // Fonts
         SpriteFont titleFont;
@@ -92,11 +92,14 @@ namespace Monogame___Final_Project
             mansion1Door = new Rectangle(560, 375, 40, 55);
             mansion2Door1 = new Rectangle(0, 228, 15, 52);
             mansion2Door3 = new Rectangle(160, 150, 60, 15);
+            mansion2Door4 = new Rectangle();
+            mansion2Door5 = new Rectangle();
+            mansion3Door = new Rectangle(485, 452, 81, 10);
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
             mansion2Location1 = new Vector2(17, 210);
-            mansion2Location2 = new Vector2();
+            mansion2Location2 = new Vector2(160, 112);
             mansion2Location3 = new Vector2();
             mansion2Location4 = new Vector2();
             mansion3Location1 = new Vector2(497, 380);
@@ -149,6 +152,7 @@ namespace Monogame___Final_Project
             barriers3.Add(new Rectangle(566, 387, 160, 100));
             barriers3.Add(new Rectangle(581, 200, 100, 56));
             barriers3.Add(new Rectangle(601, 256, 100, 166));
+            barriers3.Add(new Rectangle(460, 462, 140, 38));
 
             base.Initialize();
 
@@ -174,6 +178,7 @@ namespace Monogame___Final_Project
             summonEffect = Content.Load<SoundEffect>("Audio/summonEffect");
             rootEffect = Content.Load<SoundEffect>("Audio/rootEffect");
             teleportEffect = Content.Load<SoundEffect>("Audio/teleportEffect");
+            doorEffect = Content.Load<SoundEffect>("Audio/doorEffect");
             
 
             // Backgrounds
@@ -273,6 +278,8 @@ namespace Monogame___Final_Project
             {
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 mainCharacter.Update(gameTime, barriers1);
+                
+                // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion1Door))
                 {
                     eIndicatorRect = new Rectangle(580, 310, 54, 48);
@@ -281,6 +288,7 @@ namespace Monogame___Final_Project
                     {
                         screen = Screen.Mansion2;
                         mainCharacter.Location = mansion2Location1;
+                        doorEffect.Play();
                     }
                 }
                 else if (!mainCharacter.HitBox.Intersects(mansion1Door))
@@ -291,7 +299,7 @@ namespace Monogame___Final_Project
             {
                 mainCharacter.Update(gameTime, barriers2);
                 
-                if (!mainCharacter.HitBox.Intersects(mansion2Door1) || !mainCharacter.HitBox.Intersects(mansion2Door3))
+                if (!mainCharacter.HitBox.Intersects(mansion2Door1) || !mainCharacter.HitBox.Intersects(mansion2Door3) || !mainCharacter.HitBox.Intersects(mansion2Door4) || !mainCharacter.HitBox.Intersects(mansion2Door5))
                     eIsVisible = false;
                 
                 // Room 1
@@ -303,7 +311,7 @@ namespace Monogame___Final_Project
                     {
                         screen = Screen.Mansion1;
                         mainCharacter.Location = mansion1Location2;
-
+                        doorEffect.Play();
                     }
                 }
                 
@@ -317,6 +325,7 @@ namespace Monogame___Final_Project
                     {
                         screen = Screen.Mansion3;
                         mainCharacter.Location = mansion3Location1;
+                        doorEffect.Play();
                     }
                 }
             }
@@ -324,6 +333,21 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Mansion3)
             {
                 mainCharacter.Update(gameTime, barriers3);
+
+                // Room 2
+                if (mainCharacter.HitBox.Intersects(mansion3Door))
+                {
+                    eIndicatorRect = new Rectangle(550, 420, 54, 48);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Mansion2;
+                        mainCharacter.Location = mansion2Location2;
+                        doorEffect.Play();
+                    }
+                }
+                else if (!mainCharacter.HitBox.Intersects(mansion3Door))
+                    eIsVisible = false;
             }
 
             base.Update(gameTime);
@@ -385,6 +409,10 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(mansion3Texture, new Vector2((window.Width / 2) - (mansion3Texture.Width / 2), (window.Height / 2) - (mansion3Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
+                if (eIsVisible)
+                {
+                    _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
+                }
             }
 
 

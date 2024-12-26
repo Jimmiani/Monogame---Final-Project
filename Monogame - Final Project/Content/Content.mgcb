@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/doorEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/doorEffect.wav
+
 #begin Audio/hauntedHouse.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
