@@ -30,8 +30,14 @@ namespace Monogame___Final_Project
         Texture2D playBtnTexture;
         Rectangle playBtnRect;
 
+        // E Indicators
+
         // Doors
         Rectangle mansion1Door, mansion2Door1, mansion2Door3, mansion2Door4, mansion2Door5, mansion3Door, mansion4Door, mansion5Door;
+        // Books
+        Rectangle book1Rect;
+        string riddle1Text;
+        Texture2D closeUpBook1;
 
         // Fonts
         SpriteFont titleFont;
@@ -40,7 +46,7 @@ namespace Monogame___Final_Project
         Texture2D eIndicatorTexture;
         Rectangle eIndicatorRect;
         bool eIsVisible;
-        Texture2D hauntedStairs, hauntedRoom2Door;
+        Texture2D hauntedStairs, hauntedRoom2Door, book1Texture;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -79,7 +85,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion2;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -88,11 +94,18 @@ namespace Monogame___Final_Project
             mansionSeconds = 0;
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
-            
+
+            riddle1Text = "The key to knowledge is hard to hold," +
+                          "Hidden within where stories are told." +
+                          "Look for the tome that feels misplaced," +
+                          "For its spine is marked but its words erased.";
+
+
+
             mansion1Door = new Rectangle(560, 375, 40, 55);
             mansion2Door1 = new Rectangle(0, 228, 15, 52);
-            mansion2Door3 = new Rectangle(160, 150, 60, 15);
-            mansion2Door4 = new Rectangle();
+            mansion2Door3 = new Rectangle(160, 150, 60, 10);
+            mansion2Door4 = new Rectangle(674, 101, 60, 8);
             mansion2Door5 = new Rectangle();
             mansion3Door = new Rectangle(485, 452, 81, 10);
 
@@ -103,7 +116,7 @@ namespace Monogame___Final_Project
             mansion2Location3 = new Vector2();
             mansion2Location4 = new Vector2();
             mansion3Location1 = new Vector2(497, 380);
-            mansion4Location1 = new Vector2();
+            mansion4Location1 = new Vector2(270, 292);
             mansion5Location1 = new Vector2();
 
             barriers1 = new List<Rectangle>();
@@ -154,13 +167,25 @@ namespace Monogame___Final_Project
             barriers3.Add(new Rectangle(601, 256, 100, 166));
             barriers3.Add(new Rectangle(460, 462, 140, 38));
 
+            barriers4 = new List<Rectangle>();
+            barriers4.Add(new Rectangle(0, 0, 800, 149));
+            barriers4.Add(new Rectangle(0, 0, 239, 500));
+            barriers4.Add(new Rectangle(0, 390, 800, 110));
+            barriers4.Add(new Rectangle(560, 0, 240, 500));
+            barriers4.Add(new Rectangle(415, 0, 75, 209));
+            barriers4.Add(new Rectangle(495, 0, 305, 224));
+            barriers4.Add(new Rectangle(450, 252, 50, 52));
+            barriers4.Add(new Rectangle(500, 255, 40, 35));
+            barriers4.Add(new Rectangle(240, 362, 18, 28));
+            barriers4.Add(new Rectangle(340, 362, 14, 28));
+
             base.Initialize();
 
             currentSong = spookySong;
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0), rootEffect, teleportEffect);
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect);
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion1Location1);
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion2Location1);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
@@ -188,6 +213,7 @@ namespace Monogame___Final_Project
             mansion1Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom1");
             mansion2Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom2");
             mansion3Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom3");
+            mansion4Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom4");
 
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -196,6 +222,7 @@ namespace Monogame___Final_Project
             eIndicatorTexture = Content.Load<Texture2D>("Images/eIndicator");
             hauntedStairs = Content.Load<Texture2D>("Images/hauntedRoom2Stairs");
             hauntedRoom2Door = Content.Load<Texture2D>("Images/hauntedDoor2");
+            book1Texture = Content.Load<Texture2D>("Images/book1");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -328,6 +355,19 @@ namespace Monogame___Final_Project
                         doorEffect.Play();
                     }
                 }
+
+                // Room 4
+                if (mainCharacter.HitBox.Intersects(mansion2Door4))
+                {
+                    eIndicatorRect = new Rectangle(730, 30, 54, 48);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Mansion4;
+                        mainCharacter.Location = mansion4Location1;
+                        doorEffect.Play();
+                    }
+                }
             }
 
             else if (screen == Screen.Mansion3)
@@ -347,6 +387,26 @@ namespace Monogame___Final_Project
                     }
                 }
                 else if (!mainCharacter.HitBox.Intersects(mansion3Door))
+                    eIsVisible = false;
+            }
+
+            else if (screen == Screen.Mansion4)
+            {
+                mainCharacter.Update(gameTime, barriers4);
+
+                // Room 2
+                if (mainCharacter.HitBox.Intersects(mansion4Door))
+                {
+                    eIndicatorRect = new Rectangle(550, 420, 54, 48);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Mansion2;
+                        mainCharacter.Location = mansion2Location3;
+                        doorEffect.Play();
+                    }
+                }
+                else if (!mainCharacter.HitBox.Intersects(mansion4Door))
                     eIsVisible = false;
             }
 
@@ -394,6 +454,7 @@ namespace Monogame___Final_Project
             {
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(mansion2Texture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(book1Texture, new Vector2(103, 125), Color.White);
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hauntedStairs, new Vector2(0, 255), Color.White);
                 _spriteBatch.Draw(hauntedRoom2Door, new Vector2(640, 412), Color.White);
@@ -407,6 +468,17 @@ namespace Monogame___Final_Project
             {
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(mansion3Texture, new Vector2((window.Width / 2) - (mansion3Texture.Width / 2), (window.Height / 2) - (mansion3Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+                mainCharacter.Draw(_spriteBatch);
+                _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
+                if (eIsVisible)
+                {
+                    _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
+                }
+            }
+            else if (screen == Screen.Mansion4)
+            {
+                _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(mansion4Texture, new Vector2((window.Width / 2) - (mansion4Texture.Width / 2), (window.Height / 2) - (mansion4Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 if (eIsVisible)
