@@ -117,7 +117,7 @@ namespace Monogame___Final_Project
             mansion2Door5 = new Rectangle(650, 475, 44, 10);
             mansion3Door = new Rectangle(485, 452, 81, 10);
             mansion4Door = new Rectangle(260, 375, 80, 15);
-            mansion5Door = new Rectangle();
+            mansion5Door = new Rectangle(556, 66, 104, 14);
 
             hintBookRect = new Rectangle(502, 290, 38, 6);
 
@@ -126,10 +126,10 @@ namespace Monogame___Final_Project
             mansion2Location1 = new Vector2(17, 210);
             mansion2Location2 = new Vector2(160, 112);
             mansion2Location3 = new Vector2(673, 67);
-            mansion2Location4 = new Vector2();
+            mansion2Location4 = new Vector2(640, 410);
             mansion3Location1 = new Vector2(497, 380);
             mansion4Location1 = new Vector2(270, 292);
-            mansion5Location1 = new Vector2();
+            mansion5Location1 = new Vector2(576, 27);
 
             barriers1 = new List<Rectangle>();
             barriers1.Add(new Rectangle(145, 175, 55, 270));
@@ -192,7 +192,15 @@ namespace Monogame___Final_Project
             barriers4.Add(new Rectangle(340, 362, 14, 28));
 
             barriers5 = new List<Rectangle>();
-
+            barriers5.Add(new Rectangle(0, 0, 800, 67));
+            barriers5.Add(new Rectangle(0, 0, 555, 193));
+            barriers5.Add(new Rectangle(661, 0, 139, 194));
+            barriers5.Add(new Rectangle(696, 0, 104, 301));
+            barriers5.Add(new Rectangle(766, 0, 34, 500));
+            barriers5.Add(new Rectangle(0, 440, 800, 60));
+            barriers5.Add(new Rectangle(0, 0, 34, 500));
+            barriers5.Add(new Rectangle(0, 0, 452, 301));
+            barriers5.Add(new Rectangle(139, 0, 208, 332));
 
             base.Initialize();
 
@@ -200,7 +208,7 @@ namespace Monogame___Final_Project
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0), rootEffect, teleportEffect);
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect);
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion2Location1);
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion2Location3);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
@@ -392,7 +400,7 @@ namespace Monogame___Final_Project
                 // Room 5
                 if (mainCharacter.HitBox.Intersects(mansion2Door5))
                 {
-                    eIndicatorRect = new Rectangle(720, 23, 54, 48);
+                    eIndicatorRect = new Rectangle(685, 405, 54, 48);
                     eIsVisible = true;
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
@@ -464,7 +472,7 @@ namespace Monogame___Final_Project
                 // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion5Door))
                 {
-                    eIndicatorRect = new Rectangle();
+                    eIndicatorRect = new Rectangle(633, 5, 54, 48);
                     eIsVisible = true;
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
