@@ -190,12 +190,22 @@
 #begin Fonts/gameFont.ttf
 /copy:Fonts/gameFont.ttf
 
+#begin Fonts/hintFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/hintFont.spritefont
+
 #begin Fonts/pixelFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/pixelFont.spritefont
+
+#begin Fonts/riddleFont.ttf
+/copy:Fonts/riddleFont.ttf
 
 #begin Images/armory.png
 /importer:TextureImporter
@@ -364,6 +374,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/hauntedRoom2Stairs.png
+
+#begin Images/hintBook.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/hintBook.png
 
 #begin Images/kitchen and bathroom.png
 /importer:TextureImporter
