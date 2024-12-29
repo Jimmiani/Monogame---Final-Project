@@ -151,18 +151,6 @@
 /processorParam:TextureFormat=Color
 /build:Backgrounds/hauntedRoom5.png
 
-#begin Backgrounds/hauntedRoom5.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Backgrounds/hauntedRoom5.png
-
 #begin Buttons/exitBtn.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -315,6 +303,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/closeBook1.png
 
+#begin Images/closedChest.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/closedChest.png
+
 #begin Images/cobwebs.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -458,6 +458,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/mounted heads.png
+
+#begin Images/openedChest.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/openedChest.png
 
 #begin Images/orb.png
 /importer:TextureImporter

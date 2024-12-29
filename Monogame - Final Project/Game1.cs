@@ -48,6 +48,8 @@ namespace Monogame___Final_Project
         Rectangle eIndicatorRect;
         bool eIsVisible;
         Texture2D hauntedStairs, hauntedRoom2Door;
+        Texture2D closedChestTexture, openedChestTexture;
+        Vector2 closedChestPos, openedChestPos;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -94,6 +96,7 @@ namespace Monogame___Final_Project
             _graphics.ApplyChanges();
             forestSeconds = 0;
             mansionSeconds = 0;
+            closedChestPos = new Vector2(280, 140);
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
 
@@ -190,6 +193,7 @@ namespace Monogame___Final_Project
             barriers4.Add(new Rectangle(500, 255, 40, 35));
             barriers4.Add(new Rectangle(240, 362, 18, 28));
             barriers4.Add(new Rectangle(340, 362, 14, 28));
+            barriers4.Add(new Rectangle(280, 0, 50, 186));
 
             barriers5 = new List<Rectangle>();
             barriers5.Add(new Rectangle(0, 0, 800, 67));
@@ -250,6 +254,8 @@ namespace Monogame___Final_Project
             book1Texture = Content.Load<Texture2D>("Images/book1");
             closeUpBook1Texture = Content.Load<Texture2D>("Images/closeBook1");
             hintBookTexture = Content.Load<Texture2D>("Images/hintBook");
+            closedChestTexture = Content.Load<Texture2D>("Images/closedChest");
+            openedChestTexture = Content.Load<Texture2D>("Images/openedChest");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -572,6 +578,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(mansion4Texture, new Vector2((window.Width / 2) - (mansion4Texture.Width / 2), (window.Height / 2) - (mansion4Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 _spriteBatch.Draw(hintBookTexture, new Vector2(517, 263), Color.White);
+                _spriteBatch.Draw(closedChestTexture, closedChestPos, Color.White);
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 if (eIsVisible)
