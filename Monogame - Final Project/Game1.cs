@@ -20,7 +20,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
-        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect;
+        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect;
         SoundEffectInstance thunderInstance;
 
         // Backgrounds
@@ -37,8 +37,8 @@ namespace Monogame___Final_Project
         // Books
         Rectangle hintBookRect, hintBookRect2;
         string riddle1Text1, riddle1Text2;
-        Texture2D book1Texture, closeUpBook1Texture, hintBookTexture;
-        bool hasKey;
+        Texture2D book1Texture, closeUpBook1Texture, hintBookTexture, keyIndicatorTexture;
+        bool hasKey, keyIsVisible;
 
         // Fonts
         SpriteFont titleFont;
@@ -51,6 +51,7 @@ namespace Monogame___Final_Project
         Texture2D hauntedStairs, hauntedRoom2Door;
         Texture2D closedChestTexture, openedChestTexture, keyTexture;
         Vector2 closedChestPos, openedChestPos;
+        Rectangle chestArea;
         Rectangle keyRect;
 
         // Locations
@@ -92,7 +93,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Mansion4;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -106,6 +107,7 @@ namespace Monogame___Final_Project
 
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
+            keyIsVisible = false;
 
             riddle1Text1 = "The key to knowledge is\n" +
                            "hard to hold,\n\n" +
@@ -131,7 +133,7 @@ namespace Monogame___Final_Project
 
             hintBookRect = new Rectangle(502, 290, 38, 6);
             hintBookRect2 = new Rectangle(95, 165, 20, 5);
-
+            chestArea = new Rectangle(294, 187, 22, 6);
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
@@ -240,6 +242,7 @@ namespace Monogame___Final_Project
             rootEffect = Content.Load<SoundEffect>("Audio/rootEffect");
             teleportEffect = Content.Load<SoundEffect>("Audio/teleportEffect");
             doorEffect = Content.Load<SoundEffect>("Audio/doorEffect");
+            collectEffect = Content.Load<SoundEffect>("Audio/collectEFfect");
             
 
             // Backgrounds
@@ -266,6 +269,7 @@ namespace Monogame___Final_Project
             closedChestTexture = Content.Load<Texture2D>("Images/closedChest");
             openedChestTexture = Content.Load<Texture2D>("Images/openedChest");
             keyTexture = Content.Load<Texture2D>("Images/chestKey");
+            keyIndicatorTexture = Content.Load<Texture2D>("Images/keyIndicator");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -478,6 +482,7 @@ namespace Monogame___Final_Project
                     }
                 }
 
+                // Hint book
                 if (mainCharacter.HitBox.Intersects(hintBookRect))
                 {
                     eIndicatorRect = new Rectangle(532, 232, 27, 24);
@@ -486,6 +491,20 @@ namespace Monogame___Final_Project
                     {
                         screen = Screen.Hint1;
                     }
+                }
+
+                // Chest
+                if (mainCharacter.HitBox.Intersects(chestArea))
+                {
+                    keyIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Hint1;
+                    }
+                }
+                else if (!mainCharacter.HitBox.Intersects(chestArea))
+                {
+                    keyIsVisible = false;
                 }
 
             }
@@ -560,6 +579,7 @@ namespace Monogame___Final_Project
                         {
                             hasKey = true;
                             keyRect = new Rectangle(490, 99, 109, 231);
+                            collectEffect.Play();
                         }
                     }
                 }
@@ -641,6 +661,10 @@ namespace Monogame___Final_Project
                 if (eIsVisible)
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
+                }
+                if (keyIsVisible)
+                {
+                    _spriteBatch.Draw(keyIndicatorTexture, new Vector2(300, 100), Color.White);
                 }
             }
             else if (screen == Screen.Mansion5)
