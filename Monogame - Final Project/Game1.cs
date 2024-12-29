@@ -35,9 +35,10 @@ namespace Monogame___Final_Project
         // Doors
         Rectangle mansion1Door, mansion2Door1, mansion2Door3, mansion2Door4, mansion2Door5, mansion3Door, mansion4Door, mansion5Door;
         // Books
-        Rectangle book1Rect, hintBookRect;
+        Rectangle hintBookRect, hintBookRect2;
         string riddle1Text1, riddle1Text2;
         Texture2D book1Texture, closeUpBook1Texture, hintBookTexture;
+        bool hasKey;
 
         // Fonts
         SpriteFont titleFont;
@@ -48,8 +49,9 @@ namespace Monogame___Final_Project
         Rectangle eIndicatorRect;
         bool eIsVisible;
         Texture2D hauntedStairs, hauntedRoom2Door;
-        Texture2D closedChestTexture, openedChestTexture;
+        Texture2D closedChestTexture, openedChestTexture, keyTexture;
         Vector2 closedChestPos, openedChestPos;
+        Rectangle keyRect;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -77,7 +79,8 @@ namespace Monogame___Final_Project
             Mansion3,
             Mansion4,
             Mansion5,
-            Hint1
+            Hint1,
+            KeyBook
         }
         Screen screen;
         public Game1()
@@ -89,7 +92,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion2;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -97,6 +100,10 @@ namespace Monogame___Final_Project
             forestSeconds = 0;
             mansionSeconds = 0;
             closedChestPos = new Vector2(280, 140);
+            openedChestPos = new Vector2(280, 140);
+            keyRect = new Rectangle(490, 99, 109, 231);
+            hasKey = false;
+
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
 
@@ -123,6 +130,8 @@ namespace Monogame___Final_Project
             mansion5Door = new Rectangle(556, 66, 104, 14);
 
             hintBookRect = new Rectangle(502, 290, 38, 6);
+            hintBookRect2 = new Rectangle(95, 165, 20, 5);
+
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
@@ -212,7 +221,7 @@ namespace Monogame___Final_Project
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0), rootEffect, teleportEffect);
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect);
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion2Location3);
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion1Location1);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             
@@ -256,6 +265,7 @@ namespace Monogame___Final_Project
             hintBookTexture = Content.Load<Texture2D>("Images/hintBook");
             closedChestTexture = Content.Load<Texture2D>("Images/closedChest");
             openedChestTexture = Content.Load<Texture2D>("Images/openedChest");
+            keyTexture = Content.Load<Texture2D>("Images/chestKey");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -415,6 +425,17 @@ namespace Monogame___Final_Project
                         doorEffect.Play();
                     }
                 }
+
+                // Key book
+                if (mainCharacter.HitBox.Intersects(hintBookRect2))
+                {
+                    eIndicatorRect = new Rectangle(114, 100, 27, 24);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.KeyBook;
+                    }
+                }
             }
 
             else if (screen == Screen.Mansion3)
@@ -503,6 +524,42 @@ namespace Monogame___Final_Project
                         {
                             screen = Screen.Mansion4;
                             backBtnRect = new Rectangle(700, 20, 80, 80);
+                        }
+                    }
+                }
+            }
+            else if (screen == Screen.KeyBook)
+            {
+                // Back Button
+                backBtnRect = new Rectangle(700, 20, 80, 80);
+
+                if (backBtnRect.Contains(mouseState.Position))
+                {
+                    backBtnRect = new Rectangle(694, 14, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        backBtnRect = new Rectangle(706, 26, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.Mansion2;
+                            backBtnRect = new Rectangle(700, 20, 80, 80);
+                        }
+                    }
+                }
+
+                // Key
+                keyRect = new Rectangle(490, 99, 109, 231);
+
+                if (keyRect.Contains(mouseState.Position))
+                {
+                    keyRect = new Rectangle(487, 94, 115, 241);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        keyRect = new Rectangle(493, 104, 103, 221);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            hasKey = true;
+                            keyRect = new Rectangle(490, 99, 109, 231);
                         }
                     }
                 }
@@ -604,6 +661,14 @@ namespace Monogame___Final_Project
                 _spriteBatch.DrawString(hintFont, riddle1Text1, new Vector2(140, 100), Color.Black);
                 _spriteBatch.DrawString(hintFont, riddle1Text2, new Vector2(430, 100), Color.Black);
                 _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
+            }
+            else if (screen == Screen.KeyBook)
+            {
+                _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(closeUpBook1Texture, new Vector2((window.Width / 2) - (closeUpBook1Texture.Width / 2), (window.Height / 2) - (closeUpBook1Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+                _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
+                if (!hasKey)
+                    _spriteBatch.Draw(keyTexture, keyRect, Color.White);
             }
 
 
