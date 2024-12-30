@@ -93,7 +93,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Mansion2;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -211,7 +211,7 @@ namespace Monogame___Final_Project
             barriers5 = new List<Rectangle>();
             barriers5.Add(new Rectangle(0, 0, 800, 67));
             barriers5.Add(new Rectangle(0, 0, 555, 193));
-            barriers5.Add(new Rectangle(661, 0, 139, 194));
+            barriers5.Add(new Rectangle(661, 0, 139, 193));
             barriers5.Add(new Rectangle(696, 0, 104, 301));
             barriers5.Add(new Rectangle(766, 0, 34, 500));
             barriers5.Add(new Rectangle(0, 440, 800, 60));
@@ -225,7 +225,7 @@ namespace Monogame___Final_Project
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0), rootEffect, teleportEffect);
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect);
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion1Location1);
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion2Location3);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             currentChestTexture = closedChestTexture;
