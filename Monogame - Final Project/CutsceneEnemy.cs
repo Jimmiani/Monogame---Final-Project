@@ -42,14 +42,20 @@ namespace Monogame___Final_Project
         private float _summonIdleTimer;
         private SoundEffect _summonEffect;
         private bool _hasPlayedSummon;
+        private SoundEffect _tensionEffect;
+        private bool _hasPlayedTension;
+        private SoundEffect _biteEffect;
+        private bool _hasBitten;
 
-        public CutsceneEnemy(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D attackSpriteSheet, Texture2D summonSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed, SoundEffect summonEffect)
+        public CutsceneEnemy(Texture2D idleSpriteSheet, Texture2D walkSpriteSheet, Texture2D attackSpriteSheet, Texture2D summonSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed, SoundEffect summonEffect, SoundEffect tensionEffect, SoundEffect biteEffect)
         {
             _idleSpriteSheet = idleSpriteSheet;
             _walkSpriteSheet = walkSpriteSheet;
             _attackSpriteSheet = attackSpriteSheet;
             _summonSpriteSheet = summonSpriteSheet;
             _summonEffect = summonEffect;
+            _tensionEffect = tensionEffect;
+            _biteEffect = biteEffect;
 
             _idleFrames = new List<Texture2D>();
             _walkFrames = new List<Texture2D>();
@@ -74,6 +80,8 @@ namespace Monogame___Final_Project
             _summonerDelayTimer = 0f;
             _summonIdleTimer = 0f;
             _hasPlayedSummon = false;
+            _hasPlayedTension = false;
+            _hasBitten = false;
 
             int idleWidth = _idleSpriteSheet.Width / 4;
             int idleHeight = _idleSpriteSheet.Height;
@@ -144,6 +152,11 @@ namespace Monogame___Final_Project
                 _isAttacking = true;  
                 _attackTimer = 0f;
                 _spawnTimer = 0f;
+                if (!_hasBitten)
+                {
+                    _biteEffect.Play();
+                    _hasBitten = true;
+                }
             }
         }
 
@@ -182,6 +195,11 @@ namespace Monogame___Final_Project
                         _isSummoning = false;
                         _currentSmnFrame = 0;
                         _position = new Vector2(290, 100);
+                        if (!_hasPlayedTension)
+                        {
+                            _tensionEffect.Play();
+                            _hasPlayedTension = true;
+                        }
                     }
                 }
 

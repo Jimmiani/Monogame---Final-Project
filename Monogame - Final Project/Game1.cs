@@ -21,7 +21,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
-        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect;
+        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect;
         SoundEffectInstance thunderInstance;
 
         // Backgrounds
@@ -98,7 +98,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Intro;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -230,7 +230,7 @@ namespace Monogame___Final_Project
             currentSong = spookySong;
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0), rootEffect, teleportEffect);
-            cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect);
+            cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect, tensionEffect, biteEffect);
             mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion1Location1);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
@@ -251,7 +251,12 @@ namespace Monogame___Final_Project
             rootEffect = Content.Load<SoundEffect>("Audio/rootEffect");
             teleportEffect = Content.Load<SoundEffect>("Audio/teleportEffect");
             doorEffect = Content.Load<SoundEffect>("Audio/doorEffect");
-            collectEffect = Content.Load<SoundEffect>("Audio/collectEFfect");
+            collectEffect = Content.Load<SoundEffect>("Audio/collectEffect");
+            chestEffect = Content.Load<SoundEffect>("Audio/chestEffect");
+            tensionEffect = Content.Load<SoundEffect>("Audio/tensionEffect");
+            biteEffect = Content.Load<SoundEffect>("Audio/biteEffect");
+            openMapEffect = Content.Load<SoundEffect>("Audio/openMapEffect");
+            closeMapEffect = Content.Load<SoundEffect>("Audio/closeMapEffect");
             
 
             // Backgrounds
@@ -359,6 +364,10 @@ namespace Monogame___Final_Project
                 forestSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 cutsceneCharacter.Update(gameTime);
                 cutsceneEnemy.Update(gameTime);
+                if (forestSeconds >= 6)
+                {
+                    MediaPlayer.Volume = 0.2f;
+                }
                 if (forestSeconds >= 19)
                 {
                     currentSong = hauntedHouseSong;
@@ -532,6 +541,7 @@ namespace Monogame___Final_Project
                     {
                         currentChestTexture = openedChestTexture;
                         currentChestPos = openedChestPos;
+                        chestEffect.Play();
                         hasKey = false;
                         hasOpenedChest = true;
                     }
@@ -643,6 +653,7 @@ namespace Monogame___Final_Project
                         if (mouseState.LeftButton == ButtonState.Released)
                         {
                             screen = currentScreen;
+                            closeMapEffect.Play();
                             backBtnRect = new Rectangle(7, 7, 50, 50);
                         }
                     }
@@ -662,19 +673,22 @@ namespace Monogame___Final_Project
                         if (mouseState.LeftButton == ButtonState.Released)
                         {
                             screen = Screen.Map;
+                            openMapEffect.Play();
                             mapBtnRect = new Rectangle(window.Width - mapBtnTexture.Width - 10, 10, mapBtnTexture.Width, mapBtnTexture.Height);
                         }
                     }
                 }
             }
 
-            if (screen != Screen.Map)
+            if (screen != Screen.Map && screen != Screen.Forest)
             {
                 ResizeWindow(800, 500);
+                MediaPlayer.Volume = 1;
             }
             else if (screen == Screen.Map)
             {
                 ResizeWindow(752, 736);
+                MediaPlayer.Volume = 0.2f;
             }
 
             base.Update(gameTime);

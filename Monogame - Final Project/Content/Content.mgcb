@@ -13,6 +13,24 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/biteEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/biteEffect.wav
+
+#begin Audio/chestEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/chestEffect.wav
+
+#begin Audio/closeMapEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/closeMapEffect.wav
+
 #begin Audio/collectEffect.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -30,6 +48,12 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Audio/hauntedHouse.mp3
+
+#begin Audio/openMapEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/openMapEffect.wav
 
 #begin Audio/rootEffect.wav
 /importer:WavImporter
@@ -54,6 +78,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/teleportEffect.wav
+
+#begin Audio/tensionEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/tensionEffect.wav
 
 #begin Audio/thunderEffect.wav
 /importer:WavImporter
