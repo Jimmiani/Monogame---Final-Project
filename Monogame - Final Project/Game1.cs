@@ -24,7 +24,7 @@ namespace Monogame___Final_Project
         SoundEffectInstance thunderInstance;
 
         // Backgrounds
-        Texture2D introTexture, forestTexture, blackTexture, mansion1Texture, mansion2Texture, mansion3Texture, mansion4Texture, mansion5Texture;
+        Texture2D introTexture, forestTexture, blackTexture, mansion1Texture, mansion2Texture, mansion3Texture, mansion4Texture, mansion5Texture, fullMapTexture;
 
         // Buttons
         Texture2D playBtnTexture, backBtnTexture;
@@ -38,7 +38,7 @@ namespace Monogame___Final_Project
         Rectangle hintBookRect, hintBookRect2;
         string riddle1Text1, riddle1Text2;
         Texture2D book1Texture, closeUpBook1Texture, hintBookTexture, keyIndicatorTexture;
-        bool hasKey, keyIsVisible, hasOpenedChest;
+        bool hasKey, keyIsVisible, hasOpenedChest, hasMap;
 
         // Fonts
         SpriteFont titleFont;
@@ -49,7 +49,7 @@ namespace Monogame___Final_Project
         Rectangle eIndicatorRect;
         bool eIsVisible;
         Texture2D hauntedStairs, hauntedRoom2Door;
-        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture;
+        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, mapBtnTexture, groundMapTexture;
         Vector2 closedChestPos, openedChestPos, currentChestPos;
         Rectangle chestArea;
         Rectangle keyRect;
@@ -81,7 +81,8 @@ namespace Monogame___Final_Project
             Mansion4,
             Mansion5,
             Hint1,
-            KeyBook
+            KeyBook,
+            Map
         }
         Screen screen;
         public Game1()
@@ -93,7 +94,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion2;
+            screen = Screen.Map;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -106,6 +107,7 @@ namespace Monogame___Final_Project
             keyRect = new Rectangle(490, 99, 109, 231);
             hasKey = false;
             hasOpenedChest = false;
+            hasMap = false;
 
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
@@ -256,6 +258,7 @@ namespace Monogame___Final_Project
             mansion3Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom3");
             mansion4Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom4");
             mansion5Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom5");
+            fullMapTexture = Content.Load<Texture2D>("Backgrounds/mansionMap");
 
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -272,6 +275,8 @@ namespace Monogame___Final_Project
             openedChestTexture = Content.Load<Texture2D>("Images/openedChest");
             keyTexture = Content.Load<Texture2D>("Images/chestKey");
             keyIndicatorTexture = Content.Load<Texture2D>("Images/keyIndicator");
+            mapBtnTexture = Content.Load<Texture2D>("Images/mapBtn");
+            groundMapTexture = Content.Load<Texture2D>("Images/mapOnGround");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -290,6 +295,12 @@ namespace Monogame___Final_Project
             hitTexture = Content.Load<Texture2D>("Spritesheets/Main Character/rectangle");
         }
 
+        public void ResizeWindow(int width, int height)
+        {
+            _graphics.PreferredBackBufferWidth = width;
+            _graphics.PreferredBackBufferHeight = height;
+            _graphics.ApplyChanges();
+        }
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -517,6 +528,18 @@ namespace Monogame___Final_Project
                     }
                 }
 
+                // Map
+                if (mainCharacter.HitBox.Intersects(chestArea) && hasOpenedChest)
+                {
+                    eIndicatorRect = new Rectangle(500, 175, 27, 24);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        hasMap = true;
+                        collectEffect.Play();
+                    }
+                }
+
             }
             else if (screen == Screen.Mansion5)
             {
@@ -595,6 +618,15 @@ namespace Monogame___Final_Project
                 }
             }
 
+            if (screen != Screen.Map)
+            {
+                ResizeWindow(800, 500);
+            }
+            else if (screen == Screen.Map)
+            {
+                ResizeWindow(752, 776);
+            }
+
             base.Update(gameTime);
         }
 
@@ -666,6 +698,10 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(mansion4Texture, new Vector2((window.Width / 2) - (mansion4Texture.Width / 2), (window.Height / 2) - (mansion4Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 _spriteBatch.Draw(hintBookTexture, new Vector2(517, 263), Color.White);
                 _spriteBatch.Draw(currentChestTexture, currentChestPos, Color.White);
+                if (/*hasOpenedChest && */!hasMap)
+                {
+                    _spriteBatch.Draw(groundMapTexture, new Vector2(338, 176), Color.White);
+                }
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 if (eIsVisible)
@@ -703,6 +739,10 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
                 if (!hasKey)
                     _spriteBatch.Draw(keyTexture, keyRect, Color.White);
+            }
+            else if (screen == Screen.Map)
+            {
+                _spriteBatch.Draw(fullMapTexture, Vector2.Zero, Color.White);
             }
             if (hasKey && (screen != Screen.KeyBook && screen != Screen.Hint1))
             {
