@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -27,8 +28,8 @@ namespace Monogame___Final_Project
         Texture2D introTexture, forestTexture, blackTexture, mansion1Texture, mansion2Texture, mansion3Texture, mansion4Texture, mansion5Texture, fullMapTexture;
 
         // Buttons
-        Texture2D playBtnTexture, backBtnTexture;
-        Rectangle playBtnRect, backBtnRect;
+        Texture2D playBtnTexture, backBtnTexture, mapBtnTexture;
+        Rectangle playBtnRect, backBtnRect, mapBtnRect;
 
         // E Indicators
 
@@ -49,9 +50,9 @@ namespace Monogame___Final_Project
         Rectangle eIndicatorRect;
         bool eIsVisible;
         Texture2D hauntedStairs, hauntedRoom2Door;
-        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, mapBtnTexture, groundMapTexture;
+        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture;
         Vector2 closedChestPos, openedChestPos, currentChestPos;
-        Rectangle chestArea;
+        Rectangle chestArea, groundMapRect;
         Rectangle keyRect;
 
         // Locations
@@ -85,6 +86,9 @@ namespace Monogame___Final_Project
             Map
         }
         Screen screen;
+
+        private Screen currentScreen;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -94,7 +98,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Map;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -126,7 +130,7 @@ namespace Monogame___Final_Project
 
 
 
-            mansion1Door = new Rectangle(560, 375, 40, 55);
+            mansion1Door = new Rectangle(580, 375, 20, 55);
             mansion2Door1 = new Rectangle(0, 228, 15, 52);
             mansion2Door3 = new Rectangle(160, 150, 60, 10);
             mansion2Door4 = new Rectangle(674, 101, 60, 8);
@@ -227,11 +231,12 @@ namespace Monogame___Final_Project
             thunderInstance = thunderEffect.CreateInstance();
             cutsceneCharacter = new CutsceneCharacter(charIdleAnimation, charWalkAnimation, charTeleportAnimation, charRootAnimation, GraphicsDevice, new Vector2(1, 0), rootEffect, teleportEffect);
             cutsceneEnemy = new CutsceneEnemy(enemyIdleAnimation, enemyWalkAnimation, enemyAtkAnimation, enemySmnAnimation, GraphicsDevice, new Vector2(-1, 0), summonEffect);
-            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion2Location3);
+            mainCharacter = new MainCharacter(charIdleAnimation, charRunAnimation, GraphicsDevice, Vector2.Zero, mansion1Location1);
             cutsceneCharacter.SetAnimation("walk");
             playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
             currentChestTexture = closedChestTexture;
-
+            groundMapRect = new Rectangle(350, 186, groundMapTexture.Width, groundMapTexture.Height);
+            mapBtnRect = new Rectangle(window.Width - mapBtnTexture.Width - 10, 10, mapBtnTexture.Width, mapBtnTexture.Height);
         }
 
         protected override void LoadContent()
@@ -366,7 +371,8 @@ namespace Monogame___Final_Project
             {
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 mainCharacter.Update(gameTime, barriers1);
-                
+                currentScreen = Screen.Mansion1;
+
                 // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion1Door))
                 {
@@ -386,7 +392,8 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Mansion2)
             {
                 mainCharacter.Update(gameTime, barriers2);
-                
+                currentScreen = Screen.Mansion2;
+
                 if (!mainCharacter.HitBox.Intersects(mansion2Door1) || !mainCharacter.HitBox.Intersects(mansion2Door3) || !mainCharacter.HitBox.Intersects(mansion2Door4) || !mainCharacter.HitBox.Intersects(mansion2Door5))
                     eIsVisible = false;
                 
@@ -420,7 +427,7 @@ namespace Monogame___Final_Project
                 // Room 4
                 if (mainCharacter.HitBox.Intersects(mansion2Door4))
                 {
-                    eIndicatorRect = new Rectangle(720, 23, 54, 48);
+                    eIndicatorRect = new Rectangle(630, 23, 54, 48);
                     eIsVisible = true;
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
@@ -458,6 +465,7 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Mansion3)
             {
                 mainCharacter.Update(gameTime, barriers3);
+                currentScreen = Screen.Mansion3;
 
                 // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion3Door))
@@ -478,8 +486,9 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Mansion4)
             {
                 mainCharacter.Update(gameTime, barriers4);
+                currentScreen = Screen.Mansion4;
 
-                if (!mainCharacter.HitBox.Intersects(mansion4Door) || !mainCharacter.HitBox.Intersects(hintBookRect) || !mainCharacter.HitBox.Intersects(chestArea))
+                if (!mainCharacter.HitBox.Intersects(mansion4Door) || !mainCharacter.HitBox.Intersects(hintBookRect) || !mainCharacter.HitBox.Intersects(chestArea) || mainCharacter.HitBox.Intersects(groundMapRect))
                     eIsVisible = false;
 
                 // Room 2
@@ -529,9 +538,9 @@ namespace Monogame___Final_Project
                 }
 
                 // Map
-                if (mainCharacter.HitBox.Intersects(chestArea) && hasOpenedChest)
+                if (mainCharacter.HitBox.Intersects(groundMapRect) && hasOpenedChest && !hasMap)
                 {
-                    eIndicatorRect = new Rectangle(500, 175, 27, 24);
+                    eIndicatorRect = new Rectangle(361, 164, 27, 24);
                     eIsVisible = true;
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
@@ -539,11 +548,13 @@ namespace Monogame___Final_Project
                         collectEffect.Play();
                     }
                 }
+                
 
             }
             else if (screen == Screen.Mansion5)
             {
                 mainCharacter.Update(gameTime, barriers5);
+                currentScreen = Screen.Mansion5;
 
                 if (!mainCharacter.HitBox.Intersects(mansion5Door))
                     eIsVisible = false;
@@ -618,13 +629,52 @@ namespace Monogame___Final_Project
                 }
             }
 
+            else if (screen == Screen.Map)
+            {
+                // Back Button
+                backBtnRect = new Rectangle(7, 7, 50, 50);
+
+                if (backBtnRect.Contains(mouseState.Position))
+                {
+                    backBtnRect = new Rectangle(2, 2, 60, 60);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        backBtnRect = new Rectangle(12, 12, 40, 40);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = currentScreen;
+                            backBtnRect = new Rectangle(7, 7, 50, 50);
+                        }
+                    }
+                }
+            }
+
+            if ((screen == Screen.Mansion1 || screen == Screen.Mansion2 || screen == Screen.Mansion3 || screen == Screen.Mansion4 || screen == Screen.Mansion5) && hasMap)
+            {
+                mapBtnRect = new Rectangle(window.Width - mapBtnTexture.Width - 10, 10, mapBtnTexture.Width, mapBtnTexture.Height);
+
+                if (mapBtnRect.Contains(mouseState.Position))
+                {
+                    mapBtnRect = new Rectangle(window.Width - mapBtnTexture.Width - 15, 5, mapBtnTexture.Width + 10, mapBtnTexture.Height + 10);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        mapBtnRect = new Rectangle(window.Width - mapBtnTexture.Width - 5, 15, mapBtnTexture.Width - 10, mapBtnTexture.Height - 10);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.Map;
+                            mapBtnRect = new Rectangle(window.Width - mapBtnTexture.Width - 10, 10, mapBtnTexture.Width, mapBtnTexture.Height);
+                        }
+                    }
+                }
+            }
+
             if (screen != Screen.Map)
             {
                 ResizeWindow(800, 500);
             }
             else if (screen == Screen.Map)
             {
-                ResizeWindow(752, 776);
+                ResizeWindow(752, 736);
             }
 
             base.Update(gameTime);
@@ -698,9 +748,9 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(mansion4Texture, new Vector2((window.Width / 2) - (mansion4Texture.Width / 2), (window.Height / 2) - (mansion4Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 _spriteBatch.Draw(hintBookTexture, new Vector2(517, 263), Color.White);
                 _spriteBatch.Draw(currentChestTexture, currentChestPos, Color.White);
-                if (/*hasOpenedChest && */!hasMap)
+                if (hasOpenedChest && !hasMap)
                 {
-                    _spriteBatch.Draw(groundMapTexture, new Vector2(338, 176), Color.White);
+                    _spriteBatch.Draw(groundMapTexture, new Vector2(350, 186), Color.White);
                 }
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
@@ -743,10 +793,15 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Map)
             {
                 _spriteBatch.Draw(fullMapTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
             }
             if (hasKey && (screen != Screen.KeyBook && screen != Screen.Hint1))
             {
                 _spriteBatch.Draw(keyTexture, new Rectangle((int)mainCharacter.Location.X - 10, (int)mainCharacter.Location.Y - 10, 18, 38), Color.White);
+            }
+            if ((screen == Screen.Mansion1 || screen == Screen.Mansion2 || screen == Screen.Mansion3 || screen == Screen.Mansion4 || screen == Screen.Mansion5) && hasMap)
+            {
+                _spriteBatch.Draw(mapBtnTexture, mapBtnRect, Color.White);
             }
 
             _spriteBatch.End();
