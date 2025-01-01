@@ -178,7 +178,7 @@ namespace Monogame___Final_Project
                 spriteEffect = SpriteEffects.FlipHorizontally;
             }
 
-            spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _location, null, Color.White, 0f, new Vector2(0, 0), 2, spriteEffect,0f);
+            spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _location, null, Color.White, 0f, new Vector2(0, 0), 2, spriteEffect, 0f);
         }
 
         public Rectangle HitBox
