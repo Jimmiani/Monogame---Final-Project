@@ -17,7 +17,7 @@ namespace Monogame___Final_Project
         Rectangle window;
         MouseState mouseState, prevMouseState;
         KeyboardState keyboardState, prevKeyboardState;
-        float forestSeconds, mansionSeconds;
+        float forestSeconds, mansionSeconds, speechSeconds4;
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
@@ -45,18 +45,19 @@ namespace Monogame___Final_Project
         SpriteFont titleFont;
         SpriteFont hintFont;
         SpriteFont speechFont;
+        SpeechManager speechManager;
 
         // Images
         Texture2D eIndicatorTexture, speechTexture;
         Rectangle eIndicatorRect;
-        Vector2 speechPosition, speechTextLocation;
-        string mansion1Speech1;
-        bool eIsVisible, speechIsVisible;
+        string mansion1Speech1, mansion1Speech2, mansion4Speech1;
+        bool eIsVisible, mansion4SpeechUsed;
         Texture2D hauntedStairs, hauntedRoom2Door;
         Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture;
         Rectangle chestRect;
         Rectangle chestArea, groundMapRect;
         Rectangle keyRect;
+        string chestText;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -92,6 +93,8 @@ namespace Monogame___Final_Project
 
         private Screen currentScreen;
 
+
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -101,21 +104,21 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Intro;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
             forestSeconds = 0;
             mansionSeconds = 0;
+            speechSeconds4 = 0;
             chestRect = new Rectangle(280, 130, 50, 50);
             keyRect = new Rectangle(490, 99, 109, 231);
             hasKey = false;
             hasOpenedChest = false;
             hasMap = false;
-            speechIsVisible = false;
-            speechPosition = new Vector2(150, 10);
-            speechTextLocation = new Vector2(300, 20);
+            mansion4SpeechUsed = false;
+            speechManager = new SpeechManager(new Vector2(310, 20));
 
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
@@ -132,10 +135,25 @@ namespace Monogame___Final_Project
                            "For its spine is marked\n" +
                            "but its words erased.";
 
-            mansion1Speech1 = "Oh no! We got banished to the\n" +
-                              "haunted mansion because of the\n" +
-                              "Forest Monster! We need to find\n" +
-                              "a way out. Maybe check the attic?";
+            
+
+            mansion1Speech1 = "Oh no! We got banished\n" +
+                              "to the Haunted Mansion\n" +
+                              "because of the Forest\n" +
+                              "Monster!";
+
+            mansion1Speech2 = "We need to find a way\n" +
+                              "out. Maybe check the\n" +
+                              "attic?";
+
+            mansion4Speech1 = "There must be something\n" +
+                              "in here. Look around and\n" +
+                              "see if you can find\n" +
+                              "anything.";
+
+            chestText = "Hmm. It's locked. Maybe\n" +
+                        "there's a key around here\n" +
+                        "somewhere.";
 
 
             mansion1Door = new Rectangle(580, 375, 20, 55);
@@ -330,6 +348,7 @@ namespace Monogame___Final_Project
             mouseState = Mouse.GetState();
             prevKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
+            speechManager.Update(keyboardState, prevKeyboardState);
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
             if (MediaPlayer.State == MediaState.Stopped)
@@ -393,15 +412,15 @@ namespace Monogame___Final_Project
                 currentScreen = Screen.Mansion1;
 
                 // Speech
-                if (mansionSeconds >= 4 && mansionSeconds <= 7)
+                if (mansionSeconds >= 4 && !speechManager.IsSpeechDone)
                 {
-                    speechPosition = new Vector2(150, 10);
-                    speechIsVisible = true;
+                    if (!speechManager.IsSpeechVisible)
+                    {
+                        speechManager.StartSpeech(new List<string> { mansion1Speech1, mansion1Speech2 });
+                    }
                 }
-                else
-                {
-                    speechIsVisible = false;
-                }
+
+
 
                 // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion1Door))
@@ -464,6 +483,11 @@ namespace Monogame___Final_Project
                         screen = Screen.Mansion4;
                         mainCharacter.Location = mansion4Location1;
                         doorEffect.Play();
+                        if (!mansion4SpeechUsed)
+                        {
+                            speechManager.ResetSpeech();
+                        }
+                        
                     }
                 }
 
@@ -517,6 +541,12 @@ namespace Monogame___Final_Project
             {
                 mainCharacter.Update(gameTime, barriers4);
                 currentScreen = Screen.Mansion4;
+                speechSeconds4 += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (speechSeconds4 > 1 && !speechManager.IsSpeechDone && !mansion4SpeechUsed)
+                {
+                    speechManager.StartSpeech(new List<string> { mansion4Speech1 });
+                }
 
                 if (!mainCharacter.HitBox.Intersects(mansion4Door) || !mainCharacter.HitBox.Intersects(hintBookRect) || !mainCharacter.HitBox.Intersects(chestArea) || mainCharacter.HitBox.Intersects(groundMapRect))
                     eIsVisible = false;
@@ -531,6 +561,7 @@ namespace Monogame___Final_Project
                         screen = Screen.Mansion2;
                         mainCharacter.Location = mansion2Location3;
                         doorEffect.Play();
+                        mansion4SpeechUsed = true;
                     }
                 }
 
@@ -549,6 +580,7 @@ namespace Monogame___Final_Project
                 if (mainCharacter.HitBox.Intersects(chestArea) && !hasKey && !hasOpenedChest)
                 {
                     keyIsVisible = true;
+                    
                 }
                 else if (!mainCharacter.HitBox.Intersects(chestArea) && !hasKey && !hasOpenedChest)
                 {
@@ -588,7 +620,7 @@ namespace Monogame___Final_Project
 
                 if (!mainCharacter.HitBox.Intersects(mansion5Door))
                     eIsVisible = false;
-
+                
                 // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion5Door))
                 {
@@ -750,11 +782,7 @@ namespace Monogame___Final_Project
                     {
                         _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
                     }
-                    if (speechIsVisible)
-                    {
-                        _spriteBatch.Draw(speechTexture, speechPosition, Color.White);
-                        _spriteBatch.DrawString(speechFont, mansion1Speech1, speechTextLocation, Color.Black);
-                    }
+                    speechManager.Draw(_spriteBatch, speechFont, speechTexture);
                 }
             }
             else if (screen == Screen.Mansion2)
@@ -802,6 +830,7 @@ namespace Monogame___Final_Project
                 {
                     _spriteBatch.Draw(keyIndicatorTexture, new Vector2(300, 95), Color.White);
                 }
+                speechManager.Draw(_spriteBatch, speechFont, speechTexture);
             }
             else if (screen == Screen.Mansion5)
             {
