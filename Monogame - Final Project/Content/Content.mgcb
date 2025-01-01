@@ -267,6 +267,13 @@
 #begin Fonts/riddleFont.ttf
 /copy:Fonts/riddleFont.ttf
 
+#begin Fonts/speechFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/speechFont.spritefont
+
 #begin Images/armory.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -363,7 +370,7 @@
 /processorParam:TextureFormat=Color
 /build:Images/closeBook1.png
 
-#begin Images/closedChest.png
+#begin Images/closeChest.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -373,7 +380,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Images/closedChest.png
+/build:Images/closeChest.png
 
 #begin Images/cobwebs.png
 /importer:TextureImporter
@@ -519,6 +526,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/library.png
 
+#begin Images/mainSpeech.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/mainSpeech.png
+
 #begin Images/mapBtn.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -555,7 +574,7 @@
 /processorParam:TextureFormat=Color
 /build:Images/mounted heads.png
 
-#begin Images/openedChest.png
+#begin Images/openChest.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -565,7 +584,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Images/openedChest.png
+/build:Images/openChest.png
 
 #begin Images/orb.png
 /importer:TextureImporter

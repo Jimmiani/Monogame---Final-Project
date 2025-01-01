@@ -44,14 +44,17 @@ namespace Monogame___Final_Project
         // Fonts
         SpriteFont titleFont;
         SpriteFont hintFont;
+        SpriteFont speechFont;
 
         // Images
-        Texture2D eIndicatorTexture;
+        Texture2D eIndicatorTexture, speechTexture;
         Rectangle eIndicatorRect;
-        bool eIsVisible;
+        Vector2 speechPosition, speechTextLocation;
+        string mansion1Speech1;
+        bool eIsVisible, speechIsVisible;
         Texture2D hauntedStairs, hauntedRoom2Door;
         Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture;
-        Vector2 closedChestPos, openedChestPos, currentChestPos;
+        Rectangle chestRect;
         Rectangle chestArea, groundMapRect;
         Rectangle keyRect;
 
@@ -98,20 +101,21 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
             forestSeconds = 0;
             mansionSeconds = 0;
-            closedChestPos = new Vector2(280, 140);
-            openedChestPos = new Vector2(280, 132);
-            currentChestPos = closedChestPos;
+            chestRect = new Rectangle(280, 130, 50, 50);
             keyRect = new Rectangle(490, 99, 109, 231);
             hasKey = false;
             hasOpenedChest = false;
             hasMap = false;
+            speechIsVisible = false;
+            speechPosition = new Vector2(150, 10);
+            speechTextLocation = new Vector2(300, 20);
 
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
@@ -128,6 +132,10 @@ namespace Monogame___Final_Project
                            "For its spine is marked\n" +
                            "but its words erased.";
 
+            mansion1Speech1 = "Oh no! We got banished to the\n" +
+                              "haunted mansion because of the\n" +
+                              "Forest Monster! We need to find\n" +
+                              "a way out. Maybe check the attic?";
 
 
             mansion1Door = new Rectangle(580, 375, 20, 55);
@@ -141,7 +149,7 @@ namespace Monogame___Final_Project
 
             hintBookRect = new Rectangle(502, 290, 38, 6);
             hintBookRect2 = new Rectangle(95, 165, 20, 5);
-            chestArea = new Rectangle(294, 187, 22, 6);
+            chestArea = new Rectangle(294, 177, 22, 6);
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
@@ -212,7 +220,7 @@ namespace Monogame___Final_Project
             barriers4.Add(new Rectangle(500, 255, 40, 35));
             barriers4.Add(new Rectangle(240, 362, 18, 28));
             barriers4.Add(new Rectangle(340, 362, 14, 28));
-            barriers4.Add(new Rectangle(280, 0, 50, 186));
+            barriers4.Add(new Rectangle(280, 0, 50, 181));
 
             barriers5 = new List<Rectangle>();
             barriers5.Add(new Rectangle(0, 0, 800, 67));
@@ -281,16 +289,18 @@ namespace Monogame___Final_Project
             book1Texture = Content.Load<Texture2D>("Images/book1");
             closeUpBook1Texture = Content.Load<Texture2D>("Images/closeBook1");
             hintBookTexture = Content.Load<Texture2D>("Images/hintBook");
-            closedChestTexture = Content.Load<Texture2D>("Images/closedChest");
-            openedChestTexture = Content.Load<Texture2D>("Images/openedChest");
+            closedChestTexture = Content.Load<Texture2D>("Images/closeChest");
+            openedChestTexture = Content.Load<Texture2D>("Images/openChest");
             keyTexture = Content.Load<Texture2D>("Images/chestKey");
             keyIndicatorTexture = Content.Load<Texture2D>("Images/keyIndicator");
             mapBtnTexture = Content.Load<Texture2D>("Images/mapBtn");
             groundMapTexture = Content.Load<Texture2D>("Images/mapOnGround");
+            speechTexture = Content.Load<Texture2D>("Images/mainSpeech");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
             hintFont = Content.Load<SpriteFont>("Fonts/hintFont");
+            speechFont = Content.Load<SpriteFont>("Fonts/speechFont");
 
             // Sprite sheets
             charWalkAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Walk");
@@ -381,6 +391,17 @@ namespace Monogame___Final_Project
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 mainCharacter.Update(gameTime, barriers1);
                 currentScreen = Screen.Mansion1;
+
+                // Speech
+                if (mansionSeconds >= 4 && mansionSeconds <= 7)
+                {
+                    speechPosition = new Vector2(150, 10);
+                    speechIsVisible = true;
+                }
+                else
+                {
+                    speechIsVisible = false;
+                }
 
                 // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion1Door))
@@ -535,12 +556,11 @@ namespace Monogame___Final_Project
                 }
                 if (mainCharacter.HitBox.Intersects(chestArea) && hasKey && !hasOpenedChest)
                 {
-                    eIndicatorRect = new Rectangle(300, 100, 54, 48);
+                    eIndicatorRect = new Rectangle(300, 95, 54, 48);
                     eIsVisible = true;
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
                         currentChestTexture = openedChestTexture;
-                        currentChestPos = openedChestPos;
                         chestEffect.Play();
                         hasKey = false;
                         hasOpenedChest = true;
@@ -680,15 +700,16 @@ namespace Monogame___Final_Project
                 }
             }
 
-            if (screen != Screen.Map && screen != Screen.Forest)
+            if (screen != Screen.Map && screen != Screen.Forest && screen != Screen.KeyBook && screen != Screen.Hint1)
             {
                 ResizeWindow(800, 500);
                 MediaPlayer.Volume = 1;
             }
-            else if (screen == Screen.Map)
+            else if (screen == Screen.Map || screen == Screen.Hint1 || screen == Screen.KeyBook)
             {
-                ResizeWindow(752, 736);
                 MediaPlayer.Volume = 0.2f;
+                if (screen == Screen.Map)
+                    ResizeWindow(752, 736);
             }
 
             base.Update(gameTime);
@@ -729,6 +750,11 @@ namespace Monogame___Final_Project
                     {
                         _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
                     }
+                    if (speechIsVisible)
+                    {
+                        _spriteBatch.Draw(speechTexture, speechPosition, Color.White);
+                        _spriteBatch.DrawString(speechFont, mansion1Speech1, speechTextLocation, Color.Black);
+                    }
                 }
             }
             else if (screen == Screen.Mansion2)
@@ -761,7 +787,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(mansion4Texture, new Vector2((window.Width / 2) - (mansion4Texture.Width / 2), (window.Height / 2) - (mansion4Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 _spriteBatch.Draw(hintBookTexture, new Vector2(517, 263), Color.White);
-                _spriteBatch.Draw(currentChestTexture, currentChestPos, Color.White);
+                _spriteBatch.Draw(currentChestTexture, chestRect, Color.White);
                 if (hasOpenedChest && !hasMap)
                 {
                     _spriteBatch.Draw(groundMapTexture, new Vector2(350, 186), Color.White);
@@ -774,7 +800,7 @@ namespace Monogame___Final_Project
                 }
                 if (keyIsVisible)
                 {
-                    _spriteBatch.Draw(keyIndicatorTexture, new Vector2(300, 100), Color.White);
+                    _spriteBatch.Draw(keyIndicatorTexture, new Vector2(300, 95), Color.White);
                 }
             }
             else if (screen == Screen.Mansion5)
