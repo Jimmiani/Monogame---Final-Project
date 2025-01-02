@@ -19,6 +19,8 @@ namespace Monogame___Final_Project
         private bool _speechIsVisible = false;
         private bool _speechIsDone = false;
         private Vector2 _speechPosition;
+        private enum Screen;
+        private Screen _screen;
 
         public SpeechManager(Vector2 initialPosition)
         {
@@ -38,6 +40,11 @@ namespace Monogame___Final_Project
             _speechIndex = 0;
             _speechIsVisible = false;
             _speechIsDone = false;
+        }
+        public void EndSpeech()
+        {
+            _speechIsVisible = false;
+            _speechIsDone = true;
         }
 
         public void Update(KeyboardState keyboardState, KeyboardState prevKeyboardState)
@@ -70,6 +77,11 @@ namespace Monogame___Final_Project
         public bool IsSpeechVisible
         {
             get { return _speechIsVisible; }
+        }
+        public Vector2 SpeechPosition
+        {
+            get { return _speechPosition; }
+            set { _speechPosition = value; }
         }
     }
 }

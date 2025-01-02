@@ -137,12 +137,11 @@ namespace Monogame___Final_Project
                            "For its spine is marked\n" +
                            "but its words erased.";
 
-            
 
-            mansion1Speech1 = "Oh no! We got banished\n" +
-                              "to the Haunted Mansion\n" +
-                              "because of the Forest\n" +
-                              "Monster!";
+
+            mansion1Speech1 = "Oh no! The Forest\n" +
+                              "Monster banished us to\n" +
+                              "the Haunted Mansion!\n";
 
             mansion1Speech2 = "We need to find a way\n" +
                               "out. Maybe check the\n" +
@@ -154,8 +153,9 @@ namespace Monogame___Final_Project
                               "anything.";
 
             mapSpeech = "Ooh a map! That could\n" +
-                        "be useful. Wonder what's\n" +
-                        "in it.";
+                        "be useful. Maybe it has\n" +
+                        "hints on how we can get\n" +
+                        "out! Check it out!";
 
             chestText = "Hmm. It's locked. Maybe\n" +
                         "there's a key around here\n" +
@@ -416,6 +416,7 @@ namespace Monogame___Final_Project
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 mainCharacter.Update(gameTime, barriers1);
                 currentScreen = Screen.Mansion1;
+                
 
                 // Speech
                 if (mansionSeconds >= 4 && !speechManager.IsSpeechDone)
@@ -436,6 +437,7 @@ namespace Monogame___Final_Project
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
                         screen = Screen.Mansion2;
+                        speechManager.EndSpeech();
                         mainCharacter.Location = mansion2Location1;
                         doorEffect.Play();
                     }
@@ -549,7 +551,7 @@ namespace Monogame___Final_Project
                 currentScreen = Screen.Mansion4;
                 speechSeconds4 += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (speechSeconds4 > 1 && !speechManager.IsSpeechDone && !mansion4SpeechUsed && !canUseMapSpeech)
+                if (speechSeconds4 > 1 && !speechManager.IsSpeechDone && !mansion4SpeechUsed)
                 {
                     speechManager.StartSpeech(new List<string> { mansion4Speech1 });
                 }
@@ -573,6 +575,7 @@ namespace Monogame___Final_Project
                         mainCharacter.Location = mansion2Location3;
                         doorEffect.Play();
                         mansion4SpeechUsed = true;
+                        speechManager.EndSpeech();
                     }
                 }
 
