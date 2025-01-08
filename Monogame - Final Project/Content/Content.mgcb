@@ -199,6 +199,30 @@
 /processorParam:TextureFormat=Color
 /build:Backgrounds/mansionMap.png
 
+#begin Backgrounds/menuScreen.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/menuScreen.png
+
+#begin Buttons/audioBtn.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buttons/audioBtn.png
+
 #begin Buttons/exitBtn.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -210,6 +234,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Buttons/exitBtn.png
+
+#begin Buttons/helpBtn.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buttons/helpBtn.png
 
 #begin Buttons/morePixelButtons.png
 /importer:TextureImporter

@@ -23,13 +23,15 @@ namespace Monogame___Final_Project
         Song currentSong, hauntedHouseSong, spookySong;
         SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect;
         SoundEffectInstance thunderInstance;
+        bool playingMusic;
+        Color musicColour;
 
         // Backgrounds
-        Texture2D introTexture, forestTexture, blackTexture, mansion1Texture, mansion2Texture, mansion3Texture, mansion4Texture, mansion5Texture, fullMapTexture;
+        Texture2D introTexture, menuTexture, forestTexture, blackTexture, mansion1Texture, mansion2Texture, mansion3Texture, mansion4Texture, mansion5Texture, fullMapTexture;
 
         // Buttons
-        Texture2D playBtnTexture, backBtnTexture, mapBtnTexture;
-        Rectangle playBtnRect, backBtnRect, mapBtnRect;
+        Texture2D playBtnTexture, backBtnTexture, mapBtnTexture, audioBtnTexture, helpBtnTexture;
+        Rectangle playBtnRect, backBtnRect, mapBtnRect, audioBtnRect, helpBtnRect;
 
         // E Indicators
 
@@ -51,7 +53,7 @@ namespace Monogame___Final_Project
         Texture2D eIndicatorTexture, speechTexture;
         Rectangle eIndicatorRect;
         string mansion1Speech1, mansion1Speech2, mansion4Speech1, mapSpeech;
-        bool eIsVisible, mansion4SpeechUsed, mapSpeechUsed, canUseMapSpeech;
+        bool eIsVisible, mansion4SpeechUsed, canUseMapSpeech;
         Texture2D hauntedStairs, hauntedRoom2Door;
         Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture;
         Rectangle chestRect;
@@ -78,6 +80,7 @@ namespace Monogame___Final_Project
         enum Screen
         {
             Intro,
+            Menu,
             IntroDark,
             Forest,
             Mansion1,
@@ -109,6 +112,12 @@ namespace Monogame___Final_Project
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
+
+            musicColour = Color.White;
+            playingMusic = true;
+            audioBtnRect = new Rectangle(20, 380, 100, 100);
+            helpBtnRect = new Rectangle(680, 380, 100, 100);
+
             forestSeconds = 0;
             mansionSeconds = 0;
             speechSeconds4 = 0;
@@ -118,7 +127,6 @@ namespace Monogame___Final_Project
             hasOpenedChest = false;
             hasMap = false;
             mansion4SpeechUsed = false;
-            mapSpeechUsed = false;
             canUseMapSpeech = false;
             speechManager = new SpeechManager(new Vector2(310, 20));
 
@@ -293,6 +301,7 @@ namespace Monogame___Final_Project
 
             // Backgrounds
             introTexture = Content.Load<Texture2D>("Backgrounds/hauntedIntro");
+            menuTexture = Content.Load<Texture2D>("Backgrounds/menuScreen");
             forestTexture = Content.Load<Texture2D>("Backgrounds/forestBackground");
             blackTexture = Content.Load<Texture2D>("Backgrounds/blackBackground");
             mansion1Texture = Content.Load<Texture2D>("Backgrounds/hauntedRoom1");
@@ -305,6 +314,8 @@ namespace Monogame___Final_Project
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
             backBtnTexture = Content.Load<Texture2D>("Buttons/exitBtn");
+            audioBtnTexture = Content.Load<Texture2D>("Buttons/audioBtn");
+            helpBtnTexture = Content.Load<Texture2D>("Buttons/helpBtn");
 
             // Images
             eIndicatorTexture = Content.Load<Texture2D>("Images/eIndicator");
@@ -357,13 +368,16 @@ namespace Monogame___Final_Project
             speechManager.Update(keyboardState, prevKeyboardState);
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
-            if (MediaPlayer.State == MediaState.Stopped)
+            if ((MediaPlayer.State == MediaState.Stopped) && playingMusic)
             {
                 MediaPlayer.Play(currentSong);
             }
 
             if (screen == Screen.Intro)
             {
+                // Play Button
+                playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
+
                 if (playBtnRect.Contains(mouseState.Position))
                 {
                     playBtnRect = new Rectangle(((window.Width / 2) - (playBtnTexture.Width / 2)) - 5, 345, playBtnTexture.Width + 10, playBtnTexture.Height + 8);
@@ -378,13 +392,35 @@ namespace Monogame___Final_Project
                         }
                     }
                 }
-                else if (!playBtnRect.Contains(mouseState.Position))
+
+                // Audio Button
+                audioBtnRect = new Rectangle(20, 380, 100, 100);
+
+                if (audioBtnRect.Contains(mouseState.Position))
                 {
-                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    audioBtnRect = new Rectangle(15, 375, 110, 110);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
                     {
-                        playBtnRect = new Rectangle((window.Width / 2) - (playBtnTexture.Width / 2), 350, playBtnTexture.Width, playBtnTexture.Height);
+                        audioBtnRect = new Rectangle(25, 385, 90, 90);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            if (playingMusic)
+                            {
+                                MediaPlayer.Pause();
+                                playingMusic = false;
+                                musicColour = Color.DarkGray;
+                            }
+                            else if (!playingMusic)
+                            {
+                                MediaPlayer.Resume();
+                                playingMusic = true;
+                                musicColour= Color.White;
+                            }
+                            audioBtnRect = new Rectangle(20, 380, 100, 100);
+                        }
                     }
                 }
+
             }
             else if (screen == Screen.IntroDark)
             {
@@ -406,7 +442,8 @@ namespace Monogame___Final_Project
                 if (forestSeconds >= 19)
                 {
                     currentSong = hauntedHouseSong;
-                    MediaPlayer.Play(currentSong);
+                    if (playingMusic)
+                        MediaPlayer.Play(currentSong);
                     screen = Screen.Mansion1;
                 }
             }
@@ -752,12 +789,12 @@ namespace Monogame___Final_Project
                 }
             }
 
-            if (screen != Screen.Map && screen != Screen.Forest && screen != Screen.KeyBook && screen != Screen.Hint1)
+            if ((screen != Screen.Map && screen != Screen.Forest && screen != Screen.KeyBook && screen != Screen.Hint1) && playingMusic)
             {
                 ResizeWindow(800, 500);
                 MediaPlayer.Volume = 1;
             }
-            else if (screen == Screen.Map || screen == Screen.Hint1 || screen == Screen.KeyBook)
+            else if ((screen == Screen.Map || screen == Screen.Hint1 || screen == Screen.KeyBook) && playingMusic)
             {
                 MediaPlayer.Volume = 0.2f;
                 if (screen == Screen.Map)
@@ -780,7 +817,14 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(playBtnTexture, playBtnRect, Color.White);
                 _spriteBatch.DrawString(titleFont, "The Eldritch", new Vector2(20, 20), Color.DimGray, 0, new Vector2(0, 0), 0.55f, SpriteEffects.None, 0);
                 _spriteBatch.DrawString(titleFont, "Gloom", new Vector2(190, 120), Color.ForestGreen, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                _spriteBatch.Draw(audioBtnTexture, audioBtnRect, musicColour);
+                _spriteBatch.Draw(helpBtnTexture, helpBtnRect, Color.White);
                 
+            }
+            else if (screen == Screen.Menu)
+            {
+                _spriteBatch.Draw(introTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(menuTexture, new Vector2((window.Width / 2) - (menuTexture.Width / 2), (window.Height / 2) - (menuTexture.Height / 2)), Color.White);
             }
             else if (screen == Screen.IntroDark)
                 _spriteBatch.Draw(blackTexture, new Vector2(0, 0), Color.White);

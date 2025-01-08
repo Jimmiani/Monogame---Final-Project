@@ -19,8 +19,6 @@ namespace Monogame___Final_Project
         private bool _speechIsVisible = false;
         private bool _speechIsDone = false;
         private Vector2 _speechPosition;
-        private enum Screen;
-        private Screen _screen;
 
         public SpeechManager(Vector2 initialPosition)
         {
