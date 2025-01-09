@@ -21,7 +21,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
-        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect;
+        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect, bellEffect;
         SoundEffectInstance thunderInstance;
         bool playingMusic;
         Color musicColour;
@@ -55,7 +55,7 @@ namespace Monogame___Final_Project
         string mansion1Speech1, mansion1Speech2, mansion4Speech1, mapSpeech;
         bool eIsVisible, mansion4SpeechUsed, canUseMapSpeech;
         Texture2D hauntedStairs, hauntedRoom2Door;
-        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture;
+        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture, bellTexture;
         Rectangle chestRect;
         Rectangle chestArea, groundMapRect;
         Rectangle keyRect;
@@ -312,6 +312,7 @@ namespace Monogame___Final_Project
             biteEffect = Content.Load<SoundEffect>("Audio/biteEffect");
             openMapEffect = Content.Load<SoundEffect>("Audio/openMapEffect");
             closeMapEffect = Content.Load<SoundEffect>("Audio/closeMapEffect");
+            bellEffect = Content.Load<SoundEffect>("Audio/bellEffect");
             
 
             // Backgrounds
@@ -346,6 +347,7 @@ namespace Monogame___Final_Project
             mapBtnTexture = Content.Load<Texture2D>("Images/mapBtn");
             groundMapTexture = Content.Load<Texture2D>("Images/mapOnGround");
             speechTexture = Content.Load<Texture2D>("Images/mainSpeech");
+            bellTexture = Content.Load<Texture2D>("Images/bell");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -721,6 +723,14 @@ namespace Monogame___Final_Project
             {
                 mainCharacter.Update(gameTime, barriers5);
                 currentScreen = Screen.Mansion5;
+                if (mainCharacter.HitBox.Bottom > 80)
+                {
+                    mainCharacter.Color = Color.DarkGray;
+                }
+                else
+                {
+                    mainCharacter.Color = Color.White;
+                }
 
                 if (!mainCharacter.HitBox.Intersects(mansion5Door))
                     eIsVisible = false;
@@ -954,6 +964,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(mansion5Texture, new Vector2((window.Width / 2) - (mansion5Texture.Width / 2), (window.Height / 2) - (mansion5Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
+                _spriteBatch.Draw(bellTexture, new Vector2(723, 211), Color.DarkGray);
                 if (eIsVisible)
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);

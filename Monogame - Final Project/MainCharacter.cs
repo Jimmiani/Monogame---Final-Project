@@ -24,6 +24,7 @@ namespace Monogame___Final_Project
         private float _frameTimer;
         private float _animationSpeed;
         private bool _facingLeft;
+        private Color _color;
         public MainCharacter(Texture2D idleSpriteSheet, Texture2D runSpriteSheet, GraphicsDevice graphicsDevice, Vector2 speed, Vector2 location)
         {
             _idleSpriteSheet = idleSpriteSheet;
@@ -37,6 +38,7 @@ namespace Monogame___Final_Project
             _frameTimer = 0;
             _animationSpeed = 0.1f;
             _facingLeft = false;
+            _color = Color.White;
 
             int idleWidth = _idleSpriteSheet.Width / 4;
             int idleHeight = _idleSpriteSheet.Height;
@@ -64,7 +66,6 @@ namespace Monogame___Final_Project
                 cropTexture.SetData(data);
                 _runFrames.Add(cropTexture);
             }
-            //_location = new Vector2(254, 285);
             _hitbox = new Rectangle();
             _hitbox.Size = new Point(runWidth, 10);
             CalculateHitbox();
@@ -178,7 +179,7 @@ namespace Monogame___Final_Project
                 spriteEffect = SpriteEffects.FlipHorizontally;
             }
 
-            spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _location, null, Color.White, 0f, new Vector2(0, 0), 2, spriteEffect, 0f);
+            spriteBatch.Draw(_currentAnimationFrames[_currentFrame], _location, null, _color, 0f, new Vector2(0, 0), 2, spriteEffect, 0f);
         }
 
         public Rectangle HitBox
@@ -190,6 +191,12 @@ namespace Monogame___Final_Project
         {
             get { return _location; }
             set { _location = value; }
+        }
+
+        public Color Color
+        {
+            get { return Color; }
+            set { _color = value; }
         }
     }
 }
