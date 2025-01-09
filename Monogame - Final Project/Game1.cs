@@ -59,7 +59,7 @@ namespace Monogame___Final_Project
         Rectangle chestRect;
         Rectangle chestArea, groundMapRect;
         Rectangle keyRect;
-        string chestText;
+        string chestText, menuInstructions;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -107,7 +107,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -133,6 +133,21 @@ namespace Monogame___Final_Project
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
             eIsVisible = false;
             keyIsVisible = false;
+
+            menuInstructions = "Hello traveler! You are an adventurer\n" +
+                               "who got cast away to the Haunted\n" +
+                               "Mansion by the horrors of the Eldritch\n" +
+                               "Forest, and you must find your way out!\n" +
+                               "You must solve riddles and puzzles in\n" +
+                               "order to escape. You better be smart or\n" +
+                               "you will be stuck there for eternity!\n\n" +
+                               "This game uses arrow keys or WASD for\n" +
+                               "movement, you press E to interact with\n" +
+                               "objects around the mansion, and I will\n" +
+                               "help you out throughout your journey.\n" +
+                               "Just press ENTER whenever I'm talking\n" +
+                               "to move onto the next part of my\n" +
+                               "speech. Good luck!";
 
             riddle1Text1 = "The key to knowledge is\n" +
                            "hard to hold,\n\n" +
@@ -421,6 +436,41 @@ namespace Monogame___Final_Project
                     }
                 }
 
+                // Help Button
+                helpBtnRect = new Rectangle(680, 380, 100, 100);
+
+                if (helpBtnRect.Contains(mouseState.Position))
+                {
+                    helpBtnRect = new Rectangle(675, 375, 110, 110);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        helpBtnRect = new Rectangle(685, 385, 90, 90);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.Menu;
+                            helpBtnRect = new Rectangle(680, 380, 100, 100);
+                        }
+                    }
+                }
+            }
+            else if (screen == Screen.Menu)
+            {
+                // Back Button
+                backBtnRect = new Rectangle(580, 30, 100, 100);
+
+                if (backBtnRect.Contains(mouseState.Position))
+                {
+                    backBtnRect = new Rectangle(575, 25, 110, 110);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        backBtnRect = new Rectangle(585, 35, 90, 90);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.Intro;
+                            backBtnRect = new Rectangle(580, 30, 100, 100);
+                        }
+                    }
+                }
             }
             else if (screen == Screen.IntroDark)
             {
@@ -825,6 +875,8 @@ namespace Monogame___Final_Project
             {
                 _spriteBatch.Draw(introTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(menuTexture, new Vector2((window.Width / 2) - (menuTexture.Width / 2), (window.Height / 2) - (menuTexture.Height / 2)), Color.White);
+                _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
+                _spriteBatch.DrawString(speechFont, menuInstructions, new Vector2(200, 105), Color.White);
             }
             else if (screen == Screen.IntroDark)
                 _spriteBatch.Draw(blackTexture, new Vector2(0, 0), Color.White);
