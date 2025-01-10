@@ -676,6 +676,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/pots.png
 
+#begin Images/RealOrb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/RealOrb.png
+
 #begin Images/rotary phone.png
 /importer:TextureImporter
 /processor:TextureProcessor

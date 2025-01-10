@@ -41,9 +41,10 @@ namespace Monogame___Final_Project
         Rectangle hintBookRect, hintBookRect2;
         string riddle1Text1, riddle1Text2;
         Texture2D book1Texture, closeUpBook1Texture, hintBookTexture, keyIndicatorTexture;
-        bool hasKey, keyIsVisible, hasOpenedChest, hasMap;
+        bool hasKey, keyIsVisible, hasOpenedChest, hasMap, hasOrb;
         // Bells
-        Rectangle bell1, bell2, bell3;
+        Rectangle bell1, bell2, bell3, bell4, orbRect;
+        int expectedBell;
 
         // Fonts
         SpriteFont titleFont;
@@ -57,11 +58,11 @@ namespace Monogame___Final_Project
         string mansion1Speech1, mansion1Speech2, mansion4Speech1, mapSpeech;
         bool eIsVisible, mansion4SpeechUsed, canUseMapSpeech;
         Texture2D hauntedStairs, hauntedRoom2Door;
-        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture, bellTexture;
+        Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture, bellTexture, orbTexture;
         Rectangle chestRect;
         Rectangle chestArea, groundMapRect;
         Rectangle keyRect;
-        string chestText, menuInstructions;
+        string menuInstructions;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -109,7 +110,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -130,6 +131,7 @@ namespace Monogame___Final_Project
             hasMap = false;
             mansion4SpeechUsed = false;
             canUseMapSpeech = false;
+            hasOrb = false;
             speechManager = new SpeechManager(new Vector2(310, 20));
 
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
@@ -182,10 +184,6 @@ namespace Monogame___Final_Project
                         "hints on how we can get\n" +
                         "out! Check it out!";
 
-            chestText = "Hmm. It's locked. Maybe\n" +
-                        "there's a key around here\n" +
-                        "somewhere.";
-
 
             mansion1Door = new Rectangle(580, 375, 20, 55);
             mansion2Door1 = new Rectangle(0, 228, 15, 52);
@@ -199,7 +197,13 @@ namespace Monogame___Final_Project
             hintBookRect = new Rectangle(502, 290, 38, 6);
             hintBookRect2 = new Rectangle(95, 165, 20, 5);
             chestArea = new Rectangle(294, 177, 22, 6);
-            bell3 = new Rectangle(477, 222, 19, 9);
+
+            expectedBell = 1;
+            bell1 = new Rectangle(720, 300, 25, 5);
+            bell2 = new Rectangle(200, 200, 40, 8);
+            bell3 = new Rectangle(510, 224, 20, 4);
+            bell4 = new Rectangle(477, 222, 19, 9);
+            orbRect = new Rectangle(431, 222, 20, 7);
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
@@ -351,6 +355,7 @@ namespace Monogame___Final_Project
             groundMapTexture = Content.Load<Texture2D>("Images/mapOnGround");
             speechTexture = Content.Load<Texture2D>("Images/mainSpeech");
             bellTexture = Content.Load<Texture2D>("Images/bell");
+            orbTexture = Content.Load<Texture2D>("Images/RealOrb");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -508,7 +513,9 @@ namespace Monogame___Final_Project
                 mansionSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 mainCharacter.Update(gameTime, barriers1);
                 currentScreen = Screen.Mansion1;
-                
+
+                if (!mainCharacter.HitBox.Intersects(mansion1Door) || !mainCharacter.HitBox.Intersects(bell2))
+                    eIsVisible = false;
 
                 // Speech
                 if (mansionSeconds >= 4 && !speechManager.IsSpeechDone)
@@ -534,8 +541,25 @@ namespace Monogame___Final_Project
                         doorEffect.Play();
                     }
                 }
-                else if (!mainCharacter.HitBox.Intersects(mansion1Door))
-                    eIsVisible = false;
+
+                // Bell
+                if (mainCharacter.HitBox.Intersects(bell2))
+                {
+                    eIndicatorRect = new Rectangle(217, 117, 27, 24);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        bellEffect.Play();
+                        if (expectedBell == 2)
+                        {
+                            expectedBell++;
+                        }
+                        else if (expectedBell != 2 && !(expectedBell >= 5))
+                        {
+                            expectedBell = 1;
+                        }
+                    }
+                }
             }
 
             else if (screen == Screen.Mansion2)
@@ -638,13 +662,35 @@ namespace Monogame___Final_Project
                 }
 
                 // Bell
-                if (mainCharacter.HitBox.Intersects(bell3))
+                if (mainCharacter.HitBox.Intersects(bell4))
                 {
                     eIndicatorRect = new Rectangle(482, 82, 27, 24);
                     eIsVisible = true;
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
                         bellEffect.Play();
+                        if (expectedBell == 4)
+                        {
+                            expectedBell++;
+                            hasOrb = true;
+                        }
+                        else if (expectedBell != 4 && !(expectedBell >= 5))
+                        {
+                            expectedBell = 1;
+                        }
+                    }
+                }
+
+                if (expectedBell == 5 && !hasOrb)
+                {
+                    if (mainCharacter.HitBox.Intersects(orbRect))
+                    {
+                        eIndicatorRect = new Rectangle(448, 107, 27, 24);
+                        eIsVisible = true;
+                        if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                        {
+                            hasOrb = true;
+                        }
                     }
                 }
             }
@@ -680,6 +726,25 @@ namespace Monogame___Final_Project
                         doorEffect.Play();
                         mansion4SpeechUsed = true;
                         speechManager.EndSpeech();
+                    }
+                }
+
+                // Bell
+                if (mainCharacter.HitBox.Intersects(bell3))
+                {
+                    eIndicatorRect = new Rectangle(519, 143, 27, 24);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        bellEffect.Play();
+                        if (expectedBell == 3)
+                        {
+                            expectedBell++;
+                        }
+                        else if (expectedBell != 3 && !(expectedBell >= 5))
+                        {
+                            expectedBell = 1;
+                        }
                     }
                 }
 
@@ -747,7 +812,7 @@ namespace Monogame___Final_Project
                     mainCharacter.Color = Color.White;
                 }
 
-                if (!mainCharacter.HitBox.Intersects(mansion5Door))
+                if (!mainCharacter.HitBox.Intersects(mansion5Door) || !mainCharacter.HitBox.Intersects(bell1))
                     eIsVisible = false;
                 
                 // Room 2
@@ -760,6 +825,25 @@ namespace Monogame___Final_Project
                         screen = Screen.Mansion2;
                         mainCharacter.Location = mansion2Location4;
                         doorEffect.Play();
+                    }
+                }
+
+                // Bell
+                if (mainCharacter.HitBox.Intersects(bell1))
+                {
+                    eIndicatorRect = new Rectangle(730, 190, 27, 24);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        bellEffect.Play();
+                        if (expectedBell == 1)
+                        {
+                            expectedBell++;
+                        }
+                        else if (expectedBell != 1 && !(expectedBell >= 5))
+                        {
+                            expectedBell = 1;
+                        }
                     }
                 }
             }
@@ -952,6 +1036,10 @@ namespace Monogame___Final_Project
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
                 }
+                if (expectedBell == 5 && !hasOrb)
+                {
+                    _spriteBatch.Draw(orbTexture, new Vector2(432, 134), Color.White);
+                }
             }
             else if (screen == Screen.Mansion4)
             {
@@ -959,6 +1047,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(mansion4Texture, new Vector2((window.Width / 2) - (mansion4Texture.Width / 2), (window.Height / 2) - (mansion4Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 _spriteBatch.Draw(hintBookTexture, new Vector2(517, 263), Color.White);
                 _spriteBatch.Draw(currentChestTexture, chestRect, Color.White);
+                _spriteBatch.Draw(bellTexture, new Vector2(511, 161), Color.White);
                 if (hasOpenedChest && !hasMap)
                 {
                     _spriteBatch.Draw(groundMapTexture, new Vector2(350, 186), Color.White);
