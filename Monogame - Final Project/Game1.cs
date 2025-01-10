@@ -42,6 +42,8 @@ namespace Monogame___Final_Project
         string riddle1Text1, riddle1Text2;
         Texture2D book1Texture, closeUpBook1Texture, hintBookTexture, keyIndicatorTexture;
         bool hasKey, keyIsVisible, hasOpenedChest, hasMap;
+        // Bells
+        Rectangle bell1, bell2, bell3;
 
         // Fonts
         SpriteFont titleFont;
@@ -107,7 +109,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Intro;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -197,6 +199,7 @@ namespace Monogame___Final_Project
             hintBookRect = new Rectangle(502, 290, 38, 6);
             hintBookRect2 = new Rectangle(95, 165, 20, 5);
             chestArea = new Rectangle(294, 177, 22, 6);
+            bell3 = new Rectangle(477, 222, 19, 9);
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
@@ -618,6 +621,9 @@ namespace Monogame___Final_Project
                 mainCharacter.Update(gameTime, barriers3);
                 currentScreen = Screen.Mansion3;
 
+                if (!mainCharacter.HitBox.Intersects(mansion3Door) || !mainCharacter.HitBox.Intersects(bell3))
+                    eIsVisible = false;
+
                 // Room 2
                 if (mainCharacter.HitBox.Intersects(mansion3Door))
                 {
@@ -630,8 +636,17 @@ namespace Monogame___Final_Project
                         doorEffect.Play();
                     }
                 }
-                else if (!mainCharacter.HitBox.Intersects(mansion3Door))
-                    eIsVisible = false;
+
+                // Bell
+                if (mainCharacter.HitBox.Intersects(bell3))
+                {
+                    eIndicatorRect = new Rectangle(482, 82, 27, 24);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        bellEffect.Play();
+                    }
+                }
             }
 
             else if (screen == Screen.Mansion4)
@@ -723,7 +738,7 @@ namespace Monogame___Final_Project
             {
                 mainCharacter.Update(gameTime, barriers5);
                 currentScreen = Screen.Mansion5;
-                if (mainCharacter.HitBox.Bottom > 80)
+                if (mainCharacter.HitBox.Bottom > 90)
                 {
                     mainCharacter.Color = Color.DarkGray;
                 }
@@ -904,6 +919,7 @@ namespace Monogame___Final_Project
                     _spriteBatch.Draw(mansion1Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                     mainCharacter.Draw(_spriteBatch);
                     _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
+                    _spriteBatch.Draw(bellTexture, new Vector2(208, 137), Color.White);
                     if (eIsVisible)
                     {
                         _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
@@ -931,6 +947,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(mansion3Texture, new Vector2((window.Width / 2) - (mansion3Texture.Width / 2), (window.Height / 2) - (mansion3Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
+                _spriteBatch.Draw(bellTexture, new Vector2(475, 106), Color.White);
                 if (eIsVisible)
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
