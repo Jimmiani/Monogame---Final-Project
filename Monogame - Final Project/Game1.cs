@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -672,7 +673,6 @@ namespace Monogame___Final_Project
                         if (expectedBell == 4)
                         {
                             expectedBell++;
-                            hasOrb = true;
                         }
                         else if (expectedBell != 4 && !(expectedBell >= 5))
                         {
@@ -1036,7 +1036,7 @@ namespace Monogame___Final_Project
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
                 }
-                if (expectedBell == 5 && !hasOrb)
+                if (expectedBell >= 5 && !hasOrb)
                 {
                     _spriteBatch.Draw(orbTexture, new Vector2(432, 134), Color.White);
                 }
@@ -1100,6 +1100,10 @@ namespace Monogame___Final_Project
             if (hasKey && (screen != Screen.KeyBook && screen != Screen.Hint1))
             {
                 _spriteBatch.Draw(keyTexture, new Rectangle((int)mainCharacter.Location.X - 10, (int)mainCharacter.Location.Y - 10, 18, 38), Color.White);
+            }
+            if (hasOrb && (screen != Screen.KeyBook && screen != Screen.Hint1 && screen != Screen.Map))
+            {
+                _spriteBatch.Draw(orbTexture, new Rectangle((int)mainCharacter.Location.X - 10, (int)mainCharacter.Location.Y - 10, 25, 25), Color.White);
             }
             if ((screen == Screen.Mansion1 || screen == Screen.Mansion2 || screen == Screen.Mansion3 || screen == Screen.Mansion4 || screen == Screen.Mansion5) && hasMap)
             {
