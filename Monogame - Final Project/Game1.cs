@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection.PortableExecutable;
 
 namespace Monogame___Final_Project
 {
@@ -64,6 +65,7 @@ namespace Monogame___Final_Project
         Rectangle chestArea, groundMapRect;
         Rectangle keyRect;
         string menuInstructions;
+        Color orbColour;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -79,6 +81,12 @@ namespace Monogame___Final_Project
         List<Rectangle> barriers4;
         List<Rectangle> barriers5;
         Texture2D charWalkAnimation, charIdleAnimation, enemyWalkAnimation, enemyIdleAnimation, enemyAtkAnimation, enemySmnAnimation, charTeleportAnimation, charRootAnimation, charRunAnimation;
+
+        // Magic Effect
+        Texture2D magicSpritesheet, cropTexture;
+        List<Texture2D> magicTextures;
+        float magicSeconds;
+        int magicIndex;
 
 
         enum Screen
@@ -205,6 +213,7 @@ namespace Monogame___Final_Project
             bell3 = new Rectangle(510, 224, 20, 4);
             bell4 = new Rectangle(477, 222, 19, 9);
             orbRect = new Rectangle(431, 222, 20, 7);
+            orbColour = Color.DarkGray;
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
@@ -287,6 +296,10 @@ namespace Monogame___Final_Project
             barriers5.Add(new Rectangle(0, 0, 34, 500));
             barriers5.Add(new Rectangle(0, 0, 452, 301));
             barriers5.Add(new Rectangle(139, 0, 208, 332));
+
+            magicTextures = new List<Texture2D>();
+            magicSeconds = 0f;
+            magicIndex = 0;
 
             base.Initialize();
 
@@ -374,6 +387,29 @@ namespace Monogame___Final_Project
             charRunAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Run");
             charRootAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Root");
             hitTexture = Content.Load<Texture2D>("Spritesheets/Main Character/rectangle");
+
+            magicSpritesheet = Content.Load<Texture2D>("Spritesheets/Magic Effects/Purple Aura");
+            Rectangle sourceRect;
+
+
+            int width = magicSpritesheet.Width / 8;
+            int height = magicSpritesheet.Height;
+
+            for (int y = 0; y < 1; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    sourceRect = new Rectangle(x * width, y * height, width, height);
+                    cropTexture = new Texture2D(GraphicsDevice, width, height);
+                    Color[] data = new Color[width * height];
+                    magicSpritesheet.GetData(0, sourceRect, data, 0, data.Length);
+                    cropTexture.SetData(data);
+                    if (magicTextures.Count < 8)
+                    {
+                        magicTextures.Add(cropTexture);
+                    }
+                }
+            }
         }
 
         public void ResizeWindow(int width, int height)
@@ -567,6 +603,15 @@ namespace Monogame___Final_Project
             {
                 mainCharacter.Update(gameTime, barriers2);
                 currentScreen = Screen.Mansion2;
+                
+                if (mainCharacter.HitBox.Intersects(new Rectangle(383, 212, 417, 288)))
+                {
+                    orbColour = Color.White;
+                }
+                else
+                {
+                    orbColour = Color.DarkGray;
+                }
 
                 if (!mainCharacter.HitBox.Intersects(mansion2Door1) || !mainCharacter.HitBox.Intersects(mansion2Door3) || !mainCharacter.HitBox.Intersects(mansion2Door4) || !mainCharacter.HitBox.Intersects(mansion2Door5))
                     eIsVisible = false;
@@ -683,6 +728,16 @@ namespace Monogame___Final_Project
 
                 if (expectedBell == 5 && !hasOrb)
                 {
+                    magicSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (magicSeconds >= 0.125f)
+                    {
+                        magicSeconds = 0;
+                        magicIndex++;
+                        if (magicIndex >= magicTextures.Count)
+                        {
+                            magicIndex = 0;
+                        }
+                    }
                     if (mainCharacter.HitBox.Intersects(orbRect))
                     {
                         eIndicatorRect = new Rectangle(448, 107, 27, 24);
@@ -803,6 +858,20 @@ namespace Monogame___Final_Project
             {
                 mainCharacter.Update(gameTime, barriers5);
                 currentScreen = Screen.Mansion5;
+                if (mainCharacter.HitBox.Left < 450 && hasOrb)
+                {
+                    magicSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (magicSeconds >= 0.125f)
+                    {
+                        magicSeconds = 0;
+                        magicIndex++;
+                        if (magicIndex >= magicTextures.Count)
+                        {
+                            magicIndex = 0;
+                        }
+                    }
+                }
+
                 if (mainCharacter.HitBox.Bottom > 90)
                 {
                     mainCharacter.Color = Color.DarkGray;
@@ -1038,6 +1107,7 @@ namespace Monogame___Final_Project
                 }
                 if (expectedBell >= 5 && !hasOrb)
                 {
+                    _spriteBatch.Draw(magicTextures[magicIndex], new Vector2(411, 112), Color.White);
                     _spriteBatch.Draw(orbTexture, new Vector2(432, 134), Color.White);
                 }
             }
@@ -1075,6 +1145,10 @@ namespace Monogame___Final_Project
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
                 }
+                if (mainCharacter.HitBox.X < 450 && hasOrb)
+                {
+                    _spriteBatch.Draw(magicTextures[magicIndex], new Rectangle((int)mainCharacter.Location.X - 30, (int)mainCharacter.Location.Y - 30, 65, 65), Color.White);
+                }
             }
             else if (screen == Screen.Hint1)
             {
@@ -1103,7 +1177,7 @@ namespace Monogame___Final_Project
             }
             if (hasOrb && (screen != Screen.KeyBook && screen != Screen.Hint1 && screen != Screen.Map))
             {
-                _spriteBatch.Draw(orbTexture, new Rectangle((int)mainCharacter.Location.X - 10, (int)mainCharacter.Location.Y - 10, 25, 25), Color.White);
+                _spriteBatch.Draw(orbTexture, new Rectangle((int)mainCharacter.Location.X - 10, (int)mainCharacter.Location.Y - 10, 25, 25), orbColour);
             }
             if ((screen == Screen.Mansion1 || screen == Screen.Mansion2 || screen == Screen.Mansion3 || screen == Screen.Mansion4 || screen == Screen.Mansion5) && hasMap)
             {
