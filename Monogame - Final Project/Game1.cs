@@ -19,7 +19,7 @@ namespace Monogame___Final_Project
         Rectangle window;
         MouseState mouseState, prevMouseState;
         KeyboardState keyboardState, prevKeyboardState;
-        float forestSeconds, mansionSeconds, speechSeconds4;
+        float forestSeconds, mansionSeconds, speechSeconds4, escapeSeconds;
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
@@ -45,7 +45,7 @@ namespace Monogame___Final_Project
         Texture2D book1Texture, closeUpBook1Texture, hintBookTexture, keyIndicatorTexture;
         bool hasKey, keyIsVisible, hasOpenedChest, hasMap, hasOrb;
         // Bells
-        Rectangle bell1, bell2, bell3, bell4, orbRect;
+        Rectangle bell1, bell2, bell3, bell4, orbRect, escapeRect;
         int expectedBell;
 
         // Fonts
@@ -66,6 +66,7 @@ namespace Monogame___Final_Project
         Rectangle keyRect;
         string menuInstructions;
         Color orbColour;
+        Texture2D brokenWall1Texture, brokenWall2Texture;
 
         // Locations
         Vector2 mansion1Location1, mansion1Location2, mansion2Location1, mansion2Location2, mansion2Location3, mansion2Location4, mansion3Location1, mansion4Location1, mansion5Location1;
@@ -88,6 +89,13 @@ namespace Monogame___Final_Project
         float magicSeconds;
         int magicIndex;
 
+        enum Escape
+        {
+            Escape1,
+            Escape2,
+            Escape3
+        }
+        Escape escape;
 
         enum Screen
         {
@@ -120,6 +128,7 @@ namespace Monogame___Final_Project
         protected override void Initialize()
         {
             screen = Screen.Mansion1;
+            escape = Escape.Escape1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -133,6 +142,7 @@ namespace Monogame___Final_Project
             forestSeconds = 0;
             mansionSeconds = 0;
             speechSeconds4 = 0;
+            escapeSeconds = 0;
             chestRect = new Rectangle(280, 130, 50, 50);
             keyRect = new Rectangle(490, 99, 109, 231);
             hasKey = false;
@@ -213,7 +223,8 @@ namespace Monogame___Final_Project
             bell3 = new Rectangle(510, 224, 20, 4);
             bell4 = new Rectangle(477, 222, 19, 9);
             orbRect = new Rectangle(431, 222, 20, 7);
-            orbColour = Color.DarkGray;
+            orbColour = Color.DarkGray * 0.7f;
+            escapeRect = new Rectangle(230, 298, 26, 7);
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
@@ -295,7 +306,8 @@ namespace Monogame___Final_Project
             barriers5.Add(new Rectangle(0, 440, 800, 60));
             barriers5.Add(new Rectangle(0, 0, 34, 500));
             barriers5.Add(new Rectangle(0, 0, 452, 301));
-            barriers5.Add(new Rectangle(139, 0, 208, 332));
+            barriers5.Add(new Rectangle(139, 0, 68, 332));
+            barriers5.Add(new Rectangle(279, 0, 68, 332));
 
             magicTextures = new List<Texture2D>();
             magicSeconds = 0f;
@@ -370,6 +382,8 @@ namespace Monogame___Final_Project
             speechTexture = Content.Load<Texture2D>("Images/mainSpeech");
             bellTexture = Content.Load<Texture2D>("Images/bell");
             orbTexture = Content.Load<Texture2D>("Images/RealOrb");
+            brokenWall1Texture = Content.Load<Texture2D>("Images/brokenWall1");
+            brokenWall2Texture = Content.Load<Texture2D>("Images/brokenWall2");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/pixelFont");
@@ -610,7 +624,7 @@ namespace Monogame___Final_Project
                 }
                 else
                 {
-                    orbColour = Color.DarkGray;
+                    orbColour = Color.DarkGray * 0.7f;
                 }
 
                 if (!mainCharacter.HitBox.Intersects(mansion2Door1) || !mainCharacter.HitBox.Intersects(mansion2Door3) || !mainCharacter.HitBox.Intersects(mansion2Door4) || !mainCharacter.HitBox.Intersects(mansion2Door5))
@@ -915,6 +929,27 @@ namespace Monogame___Final_Project
                         }
                     }
                 }
+                
+                // Escape
+                if (mainCharacter.HitBox.Intersects(escapeRect) && hasOrb && escape == Escape.Escape1)
+                {
+                    eIndicatorRect = new Rectangle(255, 200, 54, 48);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyDown(Keys.E))
+                    {
+                        escape = Escape.Escape2;
+                        hasOrb = false;
+                    }
+                }
+
+                if (escape == Escape.Escape2)
+                {
+                    escapeSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (escapeSeconds > 1.5f)
+                    {
+                        escape = Escape.Escape3;
+                    }
+                }
             }
             else if (screen == Screen.Hint1)
             {
@@ -1138,6 +1173,14 @@ namespace Monogame___Final_Project
             {
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(mansion5Texture, new Vector2((window.Width / 2) - (mansion5Texture.Width / 2), (window.Height / 2) - (mansion5Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+                if (escape == Escape.Escape2)
+                {
+                    _spriteBatch.Draw(brokenWall1Texture, new Vector2(198, 213), Color.White);
+                }
+                if (escape == Escape.Escape3)
+                {
+                    _spriteBatch.Draw(brokenWall2Texture, new Vector2(175, 213), Color.White);
+                }
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 _spriteBatch.Draw(bellTexture, new Vector2(723, 211), Color.DarkGray);
