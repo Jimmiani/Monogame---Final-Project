@@ -57,8 +57,8 @@ namespace Monogame___Final_Project
         // Images
         Texture2D eIndicatorTexture, speechTexture;
         Rectangle eIndicatorRect;
-        string mansion1Speech1, mansion1Speech2, mansion4Speech1, mapSpeech;
-        bool eIsVisible, mansion4SpeechUsed, canUseMapSpeech;
+        string mansion1Speech1, mansion1Speech2, mansion4Speech1, mapSpeech, orbSpeech;
+        bool eIsVisible, mansion4SpeechUsed, canUseMapSpeech, hasUsedOrb, hasUsedOrbSpeech;
         Texture2D hauntedStairs, hauntedRoom2Door;
         Texture2D closedChestTexture, openedChestTexture, currentChestTexture, keyTexture, groundMapTexture, bellTexture, orbTexture;
         Rectangle chestRect;
@@ -151,6 +151,8 @@ namespace Monogame___Final_Project
             mansion4SpeechUsed = false;
             canUseMapSpeech = false;
             hasOrb = false;
+            hasUsedOrb = false;
+            hasUsedOrbSpeech = false;
             speechManager = new SpeechManager(new Vector2(310, 20));
 
             eIndicatorRect = new Rectangle(580, 310, 54, 48);
@@ -202,6 +204,10 @@ namespace Monogame___Final_Project
                         "be useful. Maybe it has\n" +
                         "hints on how we can get\n" +
                         "out! Check it out!";
+
+            orbSpeech = "What is that? Maybe that\n" +
+                        "could be our way out of\n" +
+                        "here! See what it does!";
 
 
             mansion1Door = new Rectangle(580, 375, 20, 55);
@@ -718,6 +724,11 @@ namespace Monogame___Final_Project
                         screen = Screen.Mansion2;
                         mainCharacter.Location = mansion2Location2;
                         doorEffect.Play();
+                        if (expectedBell == 5)
+                        {
+                            hasUsedOrbSpeech = true;
+                            speechManager.EndSpeech();
+                        }
                     }
                 }
 
@@ -740,7 +751,15 @@ namespace Monogame___Final_Project
                     }
                 }
 
-                if (expectedBell == 5 && !hasOrb)
+                if (expectedBell == 5 && !hasUsedOrbSpeech)
+                {
+                    if (!speechManager.IsSpeechVisible)
+                    {
+                        speechManager.StartSpeech(new List<string> { orbSpeech });
+                    }
+                }
+                
+                if (expectedBell == 5 && !hasOrb && !hasUsedOrb)
                 {
                     magicSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (magicSeconds >= 0.125f)
@@ -939,6 +958,7 @@ namespace Monogame___Final_Project
                     {
                         escape = Escape.Escape2;
                         hasOrb = false;
+                        hasUsedOrb = true;
                     }
                 }
 
@@ -1140,11 +1160,12 @@ namespace Monogame___Final_Project
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
                 }
-                if (expectedBell >= 5 && !hasOrb)
+                if (expectedBell >= 5 && !hasOrb && !hasUsedOrb)
                 {
                     _spriteBatch.Draw(magicTextures[magicIndex], new Vector2(411, 112), Color.White);
                     _spriteBatch.Draw(orbTexture, new Vector2(432, 134), Color.White);
                 }
+                speechManager.Draw(_spriteBatch, speechFont, speechTexture);
             }
             else if (screen == Screen.Mansion4)
             {
@@ -1213,6 +1234,10 @@ namespace Monogame___Final_Project
             {
                 _spriteBatch.Draw(fullMapTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
+                _spriteBatch.DrawString(speechFont, "1", new Vector2(676, 646), Color.Red);
+                _spriteBatch.DrawString(speechFont, "2", new Vector2(40, 184), Color.Red);
+                _spriteBatch.DrawString(speechFont, "3", new Vector2(675, 116), Color.Red);
+                _spriteBatch.DrawString(speechFont, "4", new Vector2(350, 60), Color.Red);
             }
             if (hasKey && (screen != Screen.KeyBook && screen != Screen.Hint1))
             {
