@@ -19,7 +19,7 @@ namespace Monogame___Final_Project
         Rectangle window;
         MouseState mouseState, prevMouseState;
         KeyboardState keyboardState, prevKeyboardState;
-        float forestSeconds, mansionSeconds, speechSeconds4, escapeSeconds;
+        float forestSeconds, mansionSeconds, speechSeconds4, escapeSeconds, endSeconds;
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
@@ -89,6 +89,14 @@ namespace Monogame___Final_Project
         float magicSeconds;
         int magicIndex;
 
+        // End Spritesheet
+        Texture2D cropTexture2;
+        List<Texture2D> runTextures;
+        int runIndex;
+        Rectangle runRect;
+        Vector2 runSpeed;
+        float runSeconds;
+
         enum Escape
         {
             Escape1,
@@ -110,7 +118,9 @@ namespace Monogame___Final_Project
             Mansion5,
             Hint1,
             KeyBook,
-            Map
+            Map,
+            End,
+            Win
         }
         Screen screen;
 
@@ -319,6 +329,13 @@ namespace Monogame___Final_Project
             magicSeconds = 0f;
             magicIndex = 0;
 
+
+            runTextures = new List<Texture2D>();
+            runSeconds = 0f;
+            runSpeed = new Vector2(-3, 0);
+            runRect = new Rectangle(896, 380, 96, 96);
+            runIndex = 0;
+
             base.Initialize();
 
             currentSong = spookySong;
@@ -430,6 +447,29 @@ namespace Monogame___Final_Project
                     }
                 }
             }
+
+            Rectangle sourceRect2;
+
+
+            int width2 = charRunAnimation.Width / 6;
+            int height2 = charRunAnimation.Height;
+
+            for (int y = 0; y < 1; y++)
+            {
+                for (int x = 0; x < 6; x++)
+                {
+                    sourceRect2 = new Rectangle(x * width2, y * height2, width2, height2);
+                    cropTexture2 = new Texture2D(GraphicsDevice, width2, height2);
+                    Color[] data2 = new Color[width2 * height2];
+                    charRunAnimation.GetData(0, sourceRect2, data2, 0, data2.Length);
+                    cropTexture2.SetData(data2);
+                    if (runTextures.Count < 6)
+                    {
+                        runTextures.Add(cropTexture2);
+                    }
+                }
+            }
+
         }
 
         public void ResizeWindow(int width, int height)
@@ -660,6 +700,7 @@ namespace Monogame___Final_Project
                         screen = Screen.Mansion3;
                         mainCharacter.Location = mansion3Location1;
                         doorEffect.Play();
+                        speechManager.ResetSpeech();
                     }
                 }
 
@@ -751,7 +792,7 @@ namespace Monogame___Final_Project
                     }
                 }
 
-                if (expectedBell == 5 && !hasUsedOrbSpeech)
+                if (expectedBell == 5 && !hasUsedOrbSpeech && !speechManager.IsSpeechDone)
                 {
                     if (!speechManager.IsSpeechVisible)
                     {
@@ -762,7 +803,7 @@ namespace Monogame___Final_Project
                 if (expectedBell == 5 && !hasOrb && !hasUsedOrb)
                 {
                     magicSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (magicSeconds >= 0.125f)
+                    if (magicSeconds >= 0.1f)
                     {
                         magicSeconds = 0;
                         magicIndex++;
@@ -894,7 +935,7 @@ namespace Monogame___Final_Project
                 if (mainCharacter.HitBox.Left < 450 && hasOrb)
                 {
                     magicSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (magicSeconds >= 0.125f)
+                    if (magicSeconds >= 0.1f)
                     {
                         magicSeconds = 0;
                         magicIndex++;
@@ -914,7 +955,7 @@ namespace Monogame___Final_Project
                     mainCharacter.Color = Color.White;
                 }
 
-                if (!mainCharacter.HitBox.Intersects(mansion5Door) || !mainCharacter.HitBox.Intersects(bell1))
+                if (!mainCharacter.HitBox.Intersects(mansion5Door) || !mainCharacter.HitBox.Intersects(bell1) || !mainCharacter.HitBox.Intersects(escapeRect))
                     eIsVisible = false;
                 
                 // Room 2
@@ -968,6 +1009,16 @@ namespace Monogame___Final_Project
                     if (escapeSeconds > 1.5f)
                     {
                         escape = Escape.Escape3;
+                    }
+                }
+
+                if (escape == Escape.Escape3 && mainCharacter.HitBox.Intersects(escapeRect))
+                {
+                    eIndicatorRect = new Rectangle(250, 180, 54, 48);
+                    eIsVisible = true;
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.End;
                     }
                 }
             }
@@ -1049,6 +1100,30 @@ namespace Monogame___Final_Project
                             backBtnRect = new Rectangle(695, 7, 50, 50);
                         }
                     }
+                }
+            }
+
+            else if (screen == Screen.End)
+            {
+                endSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                runSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (endSeconds > 3)
+                {
+                    runRect.X += (int)runSpeed.X;
+                    runRect.Y += (int)runSpeed.Y;
+                    if (runSeconds > 0.1f)
+                    {
+                        runIndex++;
+                        runSeconds = 0;
+                        if (runIndex >= runTextures.Count)
+                        {
+                            runIndex = 0;
+                        }
+                    }
+                }
+                if (runRect.Right < 0)
+                {
+                    screen = Screen.Win;
                 }
             }
 
@@ -1238,6 +1313,15 @@ namespace Monogame___Final_Project
                 _spriteBatch.DrawString(speechFont, "2", new Vector2(40, 184), Color.Red);
                 _spriteBatch.DrawString(speechFont, "3", new Vector2(675, 116), Color.Red);
                 _spriteBatch.DrawString(speechFont, "4", new Vector2(350, 60), Color.Red);
+            }
+            else if (screen == Screen.End)
+            {
+                _spriteBatch.Draw(forestTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(runTextures[runIndex], runRect, null, Color.White, 0, Vector2.Zero, SpriteEffects.FlipHorizontally, 0);
+            }
+            else if (screen == Screen.Win)
+            {
+                _spriteBatch.Draw(introTexture, Vector2.Zero, Color.White);
             }
             if (hasKey && (screen != Screen.KeyBook && screen != Screen.Hint1))
             {
