@@ -97,6 +97,12 @@ namespace Monogame___Final_Project
         Vector2 runSpeed;
         float runSeconds;
 
+        // Idle Sprite sheet
+        Texture2D cropTexture3;
+        List<Texture2D> idleTextures;
+        int idleIndex;
+        float idleSeconds;
+
         enum Escape
         {
             Escape1,
@@ -137,7 +143,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.End;
             escape = Escape.Escape1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
@@ -336,6 +342,10 @@ namespace Monogame___Final_Project
             runRect = new Rectangle(896, 380, 96, 96);
             runIndex = 0;
 
+            idleIndex = 0;
+            idleSeconds = 0f;
+            idleTextures = new List<Texture2D>();
+
             base.Initialize();
 
             currentSong = spookySong;
@@ -466,6 +476,28 @@ namespace Monogame___Final_Project
                     if (runTextures.Count < 6)
                     {
                         runTextures.Add(cropTexture2);
+                    }
+                }
+            }
+
+            Rectangle sourceRect3;
+
+
+            int width3 = charIdleAnimation.Width / 4;
+            int height3 = charIdleAnimation.Height;
+
+            for (int y = 0; y < 1; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    sourceRect3 = new Rectangle(x * width3, y * height3, width3, height3);
+                    cropTexture3 = new Texture2D(GraphicsDevice, width3, height3);
+                    Color[] data3 = new Color[width3 * height3];
+                    charIdleAnimation.GetData(0, sourceRect3, data3, 0, data3.Length);
+                    cropTexture3.SetData(data3);
+                    if (idleTextures.Count < 4)
+                    {
+                        idleTextures.Add(cropTexture3);
                     }
                 }
             }
@@ -1107,7 +1139,7 @@ namespace Monogame___Final_Project
             {
                 endSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 runSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (endSeconds > 3)
+                if (endSeconds > 2)
                 {
                     runRect.X += (int)runSpeed.X;
                     runRect.Y += (int)runSpeed.Y;
@@ -1124,6 +1156,19 @@ namespace Monogame___Final_Project
                 if (runRect.Right < 0)
                 {
                     screen = Screen.Win;
+                }
+            }
+            else if (screen == Screen.Win)
+            {
+                idleSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (idleSeconds > 0.1f)
+                {
+                    idleIndex++;
+                    idleSeconds = 0;
+                    if ( idleIndex >= idleTextures.Count)
+                    {
+                        idleIndex = 0;
+                    }
                 }
             }
 
@@ -1322,6 +1367,8 @@ namespace Monogame___Final_Project
             else if (screen == Screen.Win)
             {
                 _spriteBatch.Draw(introTexture, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(idleTextures[idleIndex], new Vector2(352, 322), null, Color.White, 0, Vector2.Zero, 3, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(titleFont, "You ESCAPED!", new Vector2(20, 20), Color.ForestGreen, 0, Vector2.Zero, 0.75f, SpriteEffects.None, 0);
             }
             if (hasKey && (screen != Screen.KeyBook && screen != Screen.Hint1))
             {
