@@ -23,7 +23,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
-        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect, bellEffect;
+        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect, bellEffect, winEffect;
         SoundEffectInstance thunderInstance;
         bool playingMusic;
         Color musicColour;
@@ -143,12 +143,14 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.End;
+            screen = Screen.Intro;
             escape = Escape.Escape1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
+
+            this.Window.Title = "The Eldritch Gloom";
 
             musicColour = Color.White;
             playingMusic = true;
@@ -186,7 +188,7 @@ namespace Monogame___Final_Project
                                "movement, you press E to interact with\n" +
                                "objects around the mansion, and I will\n" +
                                "help you out throughout your journey.\n" +
-                               "Just press ENTER whenever I'm talking\n" +
+                               "Just press ENTER whenever I am talking\n" +
                                "to move onto the next part of my\n" +
                                "speech. Good luck!";
 
@@ -335,7 +337,6 @@ namespace Monogame___Final_Project
             magicSeconds = 0f;
             magicIndex = 0;
 
-
             runTextures = new List<Texture2D>();
             runSeconds = 0f;
             runSpeed = new Vector2(-3, 0);
@@ -379,7 +380,8 @@ namespace Monogame___Final_Project
             openMapEffect = Content.Load<SoundEffect>("Audio/openMapEffect");
             closeMapEffect = Content.Load<SoundEffect>("Audio/closeMapEffect");
             bellEffect = Content.Load<SoundEffect>("Audio/bellEffect");
-            
+            winEffect = Content.Load<SoundEffect>("Audio/winEffect");
+
 
             // Backgrounds
             introTexture = Content.Load<Texture2D>("Backgrounds/hauntedIntro");
@@ -434,7 +436,6 @@ namespace Monogame___Final_Project
             charRunAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Run");
             charRootAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Root");
             hitTexture = Content.Load<Texture2D>("Spritesheets/Main Character/rectangle");
-
             magicSpritesheet = Content.Load<Texture2D>("Spritesheets/Magic Effects/Purple Aura");
             Rectangle sourceRect;
 
@@ -501,7 +502,6 @@ namespace Monogame___Final_Project
                     }
                 }
             }
-
         }
 
         public void ResizeWindow(int width, int height)
@@ -520,7 +520,6 @@ namespace Monogame___Final_Project
             prevKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
             speechManager.Update(keyboardState, prevKeyboardState);
-            this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
             if ((MediaPlayer.State == MediaState.Stopped) && playingMusic)
             {
@@ -1156,6 +1155,7 @@ namespace Monogame___Final_Project
                 if (runRect.Right < 0)
                 {
                     screen = Screen.Win;
+                    winEffect.Play();
                 }
             }
             else if (screen == Screen.Win)
@@ -1246,7 +1246,6 @@ namespace Monogame___Final_Project
                 {
                     _spriteBatch.Draw(mansion1Texture, new Vector2((window.Width / 2) - (mansion1Texture.Width / 2), (window.Height / 2) - (mansion1Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                     mainCharacter.Draw(_spriteBatch);
-                    _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                     _spriteBatch.Draw(bellTexture, new Vector2(208, 137), Color.White);
                     if (eIsVisible)
                     {
@@ -1263,7 +1262,6 @@ namespace Monogame___Final_Project
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hauntedStairs, new Vector2(0, 255), Color.White);
                 _spriteBatch.Draw(hauntedRoom2Door, new Vector2(640, 412), Color.White);
-                _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 if (eIsVisible)
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
@@ -1274,7 +1272,6 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(blackTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(mansion3Texture, new Vector2((window.Width / 2) - (mansion3Texture.Width / 2), (window.Height / 2) - (mansion3Texture.Height / 2)), null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
                 mainCharacter.Draw(_spriteBatch);
-                _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 _spriteBatch.Draw(bellTexture, new Vector2(475, 106), Color.White);
                 if (eIsVisible)
                 {
@@ -1299,7 +1296,6 @@ namespace Monogame___Final_Project
                     _spriteBatch.Draw(groundMapTexture, new Vector2(350, 186), Color.White);
                 }
                 mainCharacter.Draw(_spriteBatch);
-                _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 if (eIsVisible)
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
@@ -1323,7 +1319,6 @@ namespace Monogame___Final_Project
                     _spriteBatch.Draw(brokenWall2Texture, new Vector2(175, 213), Color.White);
                 }
                 mainCharacter.Draw(_spriteBatch);
-                _spriteBatch.Draw(hitTexture, mainCharacter.HitBox, Color.Red * 0.4f);
                 _spriteBatch.Draw(bellTexture, new Vector2(723, 211), Color.DarkGray);
                 if (eIsVisible)
                 {
