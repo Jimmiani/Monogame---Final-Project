@@ -25,6 +25,12 @@
 /processorParam:Quality=Best
 /build:Audio/biteEffect.wav
 
+#begin Audio/breakEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/breakEffect.wav
+
 #begin Audio/chestEffect.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

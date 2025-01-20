@@ -23,7 +23,7 @@ namespace Monogame___Final_Project
 
         // Audio
         Song currentSong, hauntedHouseSong, spookySong;
-        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect, bellEffect, winEffect;
+        SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect, bellEffect, winEffect, breakEffect;
         SoundEffectInstance thunderInstance;
         bool playingMusic;
         Color musicColour;
@@ -111,6 +111,16 @@ namespace Monogame___Final_Project
         }
         Escape escape;
 
+        enum Step
+        {
+            Step1,
+            Step2,
+            Step3,
+            Step4
+        }
+        Step step, currentStep, prevStep;
+        Rectangle step1Rect, step2Rect, step3Rect;
+
         enum Screen
         {
             Intro,
@@ -143,8 +153,9 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion1;
             escape = Escape.Escape1;
+            currentStep = Step.Step2;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -156,6 +167,10 @@ namespace Monogame___Final_Project
             playingMusic = true;
             audioBtnRect = new Rectangle(20, 380, 100, 100);
             helpBtnRect = new Rectangle(680, 380, 100, 100);
+
+            step1Rect = new Rectangle(30, 220, 1, 75);
+            step2Rect = new Rectangle(62, 230, 1, 70);
+            step3Rect = new Rectangle(94, 240, 1, 65);
 
             forestSeconds = 0;
             mansionSeconds = 0;
@@ -252,7 +267,7 @@ namespace Monogame___Final_Project
 
             mansion1Location1 = new Vector2(254, 285);
             mansion1Location2 = new Vector2(518, 339);
-            mansion2Location1 = new Vector2(17, 210);
+            mansion2Location1 = new Vector2(20, 210);
             mansion2Location2 = new Vector2(160, 112);
             mansion2Location3 = new Vector2(673, 67);
             mansion2Location4 = new Vector2(640, 410);
@@ -381,6 +396,7 @@ namespace Monogame___Final_Project
             closeMapEffect = Content.Load<SoundEffect>("Audio/closeMapEffect");
             bellEffect = Content.Load<SoundEffect>("Audio/bellEffect");
             winEffect = Content.Load<SoundEffect>("Audio/winEffect");
+            breakEffect = Content.Load<SoundEffect>("Audio/breakEffect");
 
 
             // Backgrounds
@@ -520,6 +536,7 @@ namespace Monogame___Final_Project
             prevKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
             speechManager.Update(keyboardState, prevKeyboardState);
+            this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
             if ((MediaPlayer.State == MediaState.Stopped) && playingMusic)
             {
@@ -695,6 +712,32 @@ namespace Monogame___Final_Project
                 mainCharacter.Update(gameTime, barriers2);
                 currentScreen = Screen.Mansion2;
                 
+                prevStep = currentStep;
+                currentStep = step;
+
+                if (mainCharacter.HitBox.Left < step1Rect.X)
+                {
+                    step = Step.Step1;
+                }
+                else if (mainCharacter.HitBox.Left < step2Rect.X && mainCharacter.HitBox.Left > step1Rect.X)
+                {
+                    step = Step.Step2;
+                }
+                else if (mainCharacter.HitBox.Left < step3Rect.X && mainCharacter.HitBox.Left > step2Rect.X)
+                {
+                    step = Step.Step3;
+                }
+                else
+                {
+                    step = Step.Step4;
+                }
+
+                if (currentStep == Step.Step1 && prevStep == Step.Step2)
+                {
+                    
+                }
+
+
                 if (mainCharacter.HitBox.Intersects(new Rectangle(383, 212, 417, 288)))
                 {
                     orbColour = Color.White;
@@ -796,10 +839,10 @@ namespace Monogame___Final_Project
                         screen = Screen.Mansion2;
                         mainCharacter.Location = mansion2Location2;
                         doorEffect.Play();
+                        speechManager.EndSpeech();
                         if (expectedBell == 5)
                         {
                             hasUsedOrbSpeech = true;
-                            speechManager.EndSpeech();
                         }
                     }
                 }
@@ -1031,6 +1074,7 @@ namespace Monogame___Final_Project
                         escape = Escape.Escape2;
                         hasOrb = false;
                         hasUsedOrb = true;
+                        breakEffect.Play();
                     }
                 }
 
@@ -1040,6 +1084,7 @@ namespace Monogame___Final_Project
                     if (escapeSeconds > 1.5f)
                     {
                         escape = Escape.Escape3;
+                        breakEffect.Play();
                     }
                 }
 
