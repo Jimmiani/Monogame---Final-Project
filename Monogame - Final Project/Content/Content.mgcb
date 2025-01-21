@@ -103,11 +103,11 @@
 /processorParam:Quality=Best
 /build:Audio/thunderEffect.wav
 
-#begin Audio/victoryMusic.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
+#begin Audio/victoryMusic.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
 /processorParam:Quality=Best
-/build:Audio/victoryMusic.wav
+/build:Audio/victoryMusic.mp3
 
 #begin Audio/winEffect.wav
 /importer:WavImporter

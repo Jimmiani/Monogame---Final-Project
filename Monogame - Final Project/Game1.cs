@@ -22,7 +22,7 @@ namespace Monogame___Final_Project
         float forestSeconds, mansionSeconds, speechSeconds4, escapeSeconds, endSeconds;
 
         // Audio
-        Song currentSong, hauntedHouseSong, spookySong;
+        Song currentSong, hauntedHouseSong, spookySong, victorySong;
         SoundEffect thunderEffect, summonEffect, rootEffect, teleportEffect, doorEffect, collectEffect, tensionEffect, chestEffect, biteEffect, openMapEffect, closeMapEffect, bellEffect, winEffect, breakEffect;
         SoundEffectInstance thunderInstance;
         bool playingMusic;
@@ -153,9 +153,9 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Intro;
+            screen = Screen.Mansion1;
             escape = Escape.Escape1;
-            currentStep = Step.Step2;
+            currentStep = Step.Step1;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -168,9 +168,9 @@ namespace Monogame___Final_Project
             audioBtnRect = new Rectangle(20, 380, 100, 100);
             helpBtnRect = new Rectangle(680, 380, 100, 100);
 
-            step1Rect = new Rectangle(28, 220, 1, 75);
-            step2Rect = new Rectangle(60, 230, 1, 70);
-            step3Rect = new Rectangle(91, 240, 1, 65);
+            step1Rect = new Rectangle(26, 240, 1, 34);
+            step2Rect = new Rectangle(58, 247, 1, 34);
+            step3Rect = new Rectangle(91, 254, 1, 34);
 
             forestSeconds = 0;
             mansionSeconds = 0;
@@ -306,9 +306,10 @@ namespace Monogame___Final_Project
             barriers2.Add(new Rectangle(256, 149, 257, 16));
             barriers2.Add(new Rectangle(159, 120, 97, 29));
             barriers2.Add(new Rectangle(84, 128, 75, 36));
-            barriers2.Add(new Rectangle(50, 110, 45, 119));
+            barriers2.Add(new Rectangle(50, 110, 45, 100));
             barriers2.Add(new Rectangle(0, 165, 31, 48));
-            barriers2.Add(new Rectangle(32, 185, 31, 34));
+            barriers2.Add(new Rectangle(34, 185, 31, 34));
+            barriers2.Add(new Rectangle(63, 188, 32, 40));
             barriers2.Add(new Rectangle(96, 194, 19, 43));
             barriers2.Add(new Rectangle(312, 262, 67, 30));
 
@@ -397,6 +398,7 @@ namespace Monogame___Final_Project
             bellEffect = Content.Load<SoundEffect>("Audio/bellEffect");
             winEffect = Content.Load<SoundEffect>("Audio/winEffect");
             breakEffect = Content.Load<SoundEffect>("Audio/breakEffect");
+            victorySong = Content.Load<Song>("Audio/victoryMusic");
 
 
             // Backgrounds
@@ -715,15 +717,15 @@ namespace Monogame___Final_Project
                 prevStep = currentStep;
                 currentStep = step;
 
-                if (mainCharacter.HitBox.Left < step1Rect.X)
+                if (mainCharacter.HitBox.Left < step1Rect.X && mainCharacter.HitBox.Bottom > step1Rect.Y)
                 {
                     step = Step.Step1;
                 }
-                else if (mainCharacter.HitBox.Left < step2Rect.X && mainCharacter.HitBox.Left > step1Rect.X)
+                else if (mainCharacter.HitBox.Left < step2Rect.X && mainCharacter.HitBox.Left > step1Rect.X && mainCharacter.HitBox.Bottom > step2Rect.Y)
                 {
                     step = Step.Step2;
                 }
-                else if (mainCharacter.HitBox.Left < step3Rect.X && mainCharacter.HitBox.Left > step2Rect.X)
+                else if (mainCharacter.HitBox.Left < step3Rect.X && mainCharacter.HitBox.Left > step2Rect.X && mainCharacter.HitBox.Bottom > step3Rect.Y)
                 {
                     step = Step.Step3;
                 }
@@ -734,11 +736,11 @@ namespace Monogame___Final_Project
 
                 if ((currentStep == Step.Step1 && prevStep == Step.Step2) || (currentStep == Step.Step2 && prevStep == Step.Step3) || (currentStep == Step.Step3 && prevStep == Step.Step4))
                 {
-                    mainCharacter.Y -= 7;
+                    mainCharacter.Y -= 6;
                 }
                 else if ((currentStep == Step.Step2 && prevStep == Step.Step1) || (currentStep == Step.Step3 && prevStep == Step.Step2) || (currentStep == Step.Step4 && prevStep == Step.Step3))
                 {
-                    mainCharacter.Y += 7;
+                    mainCharacter.Y += 6;
                 }
 
                 if (mainCharacter.HitBox.Intersects(new Rectangle(383, 212, 417, 288)))
@@ -1204,6 +1206,9 @@ namespace Monogame___Final_Project
                 {
                     screen = Screen.Win;
                     winEffect.Play();
+                    currentSong = victorySong;
+                    if (playingMusic)
+                        MediaPlayer.Play(currentSong);
                 }
             }
             else if (screen == Screen.Win)
@@ -1277,7 +1282,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(introTexture, Vector2.Zero, Color.White);
                 _spriteBatch.Draw(menuTexture, new Vector2((window.Width / 2) - (menuTexture.Width / 2), (window.Height / 2) - (menuTexture.Height / 2)), Color.White);
                 _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
-                _spriteBatch.DrawString(speechFont, menuInstructions, new Vector2(200, 105), Color.White);
+                _spriteBatch.DrawString(speechFont, menuInstructions, new Vector2(204, 102), Color.White);
             }
             else if (screen == Screen.IntroDark)
                 _spriteBatch.Draw(blackTexture, new Vector2(0, 0), Color.White);
@@ -1310,6 +1315,9 @@ namespace Monogame___Final_Project
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hauntedStairs, new Vector2(0, 255), Color.White);
                 _spriteBatch.Draw(hauntedRoom2Door, new Vector2(640, 412), Color.White);
+                _spriteBatch.Draw(hitTexture, new Rectangle(0, 165, 31, 48), Color.Red * 0.4f);
+                _spriteBatch.Draw(hitTexture, new Rectangle(32, 185, 31, 34), Color.Red * 0.4f);
+                _spriteBatch.Draw(hitTexture, new Rectangle(96, 194, 19, 43), Color.Red * 0.4f);
                 if (eIsVisible)
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
