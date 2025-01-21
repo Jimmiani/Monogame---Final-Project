@@ -153,7 +153,7 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Intro;
             escape = Escape.Escape1;
             currentStep = Step.Step2;
             window = new Rectangle(0, 0, 800, 500);
@@ -168,9 +168,9 @@ namespace Monogame___Final_Project
             audioBtnRect = new Rectangle(20, 380, 100, 100);
             helpBtnRect = new Rectangle(680, 380, 100, 100);
 
-            step1Rect = new Rectangle(30, 220, 1, 75);
-            step2Rect = new Rectangle(62, 230, 1, 70);
-            step3Rect = new Rectangle(94, 240, 1, 65);
+            step1Rect = new Rectangle(28, 220, 1, 75);
+            step2Rect = new Rectangle(60, 230, 1, 70);
+            step3Rect = new Rectangle(91, 240, 1, 65);
 
             forestSeconds = 0;
             mansionSeconds = 0;
@@ -732,11 +732,14 @@ namespace Monogame___Final_Project
                     step = Step.Step4;
                 }
 
-                if (currentStep == Step.Step1 && prevStep == Step.Step2)
+                if ((currentStep == Step.Step1 && prevStep == Step.Step2) || (currentStep == Step.Step2 && prevStep == Step.Step3) || (currentStep == Step.Step3 && prevStep == Step.Step4))
                 {
-                    
+                    mainCharacter.Y -= 7;
                 }
-
+                else if ((currentStep == Step.Step2 && prevStep == Step.Step1) || (currentStep == Step.Step3 && prevStep == Step.Step2) || (currentStep == Step.Step4 && prevStep == Step.Step3))
+                {
+                    mainCharacter.Y += 7;
+                }
 
                 if (mainCharacter.HitBox.Intersects(new Rectangle(383, 212, 417, 288)))
                 {

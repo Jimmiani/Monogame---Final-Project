@@ -198,5 +198,10 @@ namespace Monogame___Final_Project
             get { return Color; }
             set { _color = value; }
         }
+        public int Y
+        {
+            get { return (int)_location.Y; }
+            set { _location.Y = value; }
+        }
     }
 }
