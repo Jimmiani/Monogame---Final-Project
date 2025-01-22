@@ -119,7 +119,7 @@ namespace Monogame___Final_Project
             Step4
         }
         Step step, currentStep, prevStep;
-        Rectangle step1Rect, step2Rect, step3Rect;
+        Rectangle step1Rect, step2Rect, step3Rect, step4Rect;
 
         enum Screen
         {
@@ -153,9 +153,9 @@ namespace Monogame___Final_Project
 
         protected override void Initialize()
         {
-            screen = Screen.Mansion1;
+            screen = Screen.Intro;
             escape = Escape.Escape1;
-            currentStep = Step.Step1;
+            currentStep = Step.Step2;
             window = new Rectangle(0, 0, 800, 500);
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -168,9 +168,10 @@ namespace Monogame___Final_Project
             audioBtnRect = new Rectangle(20, 380, 100, 100);
             helpBtnRect = new Rectangle(680, 380, 100, 100);
 
-            step1Rect = new Rectangle(26, 238, 0, 34);
-            step2Rect = new Rectangle(56, 244, 0, 34);
-            step3Rect = new Rectangle(86, 250, 0, 34);
+            step1Rect = new Rectangle(26, 237, 0, 34);
+            step2Rect = new Rectangle(56, 243, 0, 34);
+            step3Rect = new Rectangle(86, 249, 0, 34);
+            step4Rect = new Rectangle(116, 255, 0, 34);
 
             forestSeconds = 0;
             mansionSeconds = 0;
@@ -538,7 +539,6 @@ namespace Monogame___Final_Project
             prevKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
             speechManager.Update(keyboardState, prevKeyboardState);
-            this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
             if ((MediaPlayer.State == MediaState.Stopped) && playingMusic)
             {
@@ -729,7 +729,7 @@ namespace Monogame___Final_Project
                 {
                     step = Step.Step3;
                 }
-                else
+                else if (mainCharacter.HitBox.Left < step4Rect.X && mainCharacter.HitBox.Left > step3Rect.X && mainCharacter.HitBox.Bottom > step4Rect.Top && mainCharacter.HitBox.Top < step4Rect.Bottom)
                 {
                     step = Step.Step4;
                 }
@@ -1315,9 +1315,6 @@ namespace Monogame___Final_Project
                 mainCharacter.Draw(_spriteBatch);
                 _spriteBatch.Draw(hauntedStairs, new Vector2(0, 255), Color.White);
                 _spriteBatch.Draw(hauntedRoom2Door, new Vector2(640, 412), Color.White);
-                _spriteBatch.Draw(hitTexture, new Rectangle(0, 165, 31, 48), Color.Red * 0.4f);
-                _spriteBatch.Draw(hitTexture, new Rectangle(32, 185, 31, 34), Color.Red * 0.4f);
-                _spriteBatch.Draw(hitTexture, new Rectangle(96, 194, 19, 43), Color.Red * 0.4f);
                 if (eIsVisible)
                 {
                     _spriteBatch.Draw(eIndicatorTexture, eIndicatorRect, Color.White);
