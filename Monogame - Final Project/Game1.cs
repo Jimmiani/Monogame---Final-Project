@@ -168,9 +168,9 @@ namespace Monogame___Final_Project
             audioBtnRect = new Rectangle(20, 380, 100, 100);
             helpBtnRect = new Rectangle(680, 380, 100, 100);
 
-            step1Rect = new Rectangle(26, 240, 1, 34);
-            step2Rect = new Rectangle(58, 247, 1, 34);
-            step3Rect = new Rectangle(91, 254, 1, 34);
+            step1Rect = new Rectangle(26, 238, 0, 34);
+            step2Rect = new Rectangle(56, 244, 0, 34);
+            step3Rect = new Rectangle(86, 250, 0, 34);
 
             forestSeconds = 0;
             mansionSeconds = 0;
@@ -717,15 +717,15 @@ namespace Monogame___Final_Project
                 prevStep = currentStep;
                 currentStep = step;
 
-                if (mainCharacter.HitBox.Left < step1Rect.X && mainCharacter.HitBox.Bottom > step1Rect.Y)
+                if (mainCharacter.HitBox.Left < step1Rect.X && mainCharacter.HitBox.Bottom > step1Rect.Top && mainCharacter.HitBox.Top < step1Rect.Bottom)
                 {
                     step = Step.Step1;
                 }
-                else if (mainCharacter.HitBox.Left < step2Rect.X && mainCharacter.HitBox.Left > step1Rect.X && mainCharacter.HitBox.Bottom > step2Rect.Y)
+                else if (mainCharacter.HitBox.Left < step2Rect.X && mainCharacter.HitBox.Left > step1Rect.X && mainCharacter.HitBox.Bottom > step2Rect.Top && mainCharacter.HitBox.Top < step2Rect.Bottom)
                 {
                     step = Step.Step2;
                 }
-                else if (mainCharacter.HitBox.Left < step3Rect.X && mainCharacter.HitBox.Left > step2Rect.X && mainCharacter.HitBox.Bottom > step3Rect.Y)
+                else if (mainCharacter.HitBox.Left < step3Rect.X && mainCharacter.HitBox.Left > step2Rect.X && mainCharacter.HitBox.Bottom > step3Rect.Top && mainCharacter.HitBox.Top < step3Rect.Bottom)
                 {
                     step = Step.Step3;
                 }
