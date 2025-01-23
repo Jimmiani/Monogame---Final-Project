@@ -32,8 +32,8 @@ namespace Monogame___Final_Project
         Texture2D introTexture, menuTexture, forestTexture, blackTexture, mansion1Texture, mansion2Texture, mansion3Texture, mansion4Texture, mansion5Texture, fullMapTexture;
 
         // Buttons
-        Texture2D playBtnTexture, backBtnTexture, mapBtnTexture, audioBtnTexture, helpBtnTexture;
-        Rectangle playBtnRect, backBtnRect, mapBtnRect, audioBtnRect, helpBtnRect;
+        Texture2D playBtnTexture, backBtnTexture, mapBtnTexture, audioBtnTexture, helpBtnTexture, skipBtnTexture;
+        Rectangle playBtnRect, backBtnRect, mapBtnRect, audioBtnRect, helpBtnRect, skipBtnRect;
 
         // E Indicators
 
@@ -75,7 +75,6 @@ namespace Monogame___Final_Project
         CutsceneCharacter cutsceneCharacter;
         CutsceneEnemy cutsceneEnemy;
         MainCharacter mainCharacter;
-        Texture2D hitTexture;
         List<Rectangle> barriers1;
         List<Rectangle> barriers2;
         List<Rectangle> barriers3;
@@ -419,6 +418,7 @@ namespace Monogame___Final_Project
             backBtnTexture = Content.Load<Texture2D>("Buttons/exitBtn");
             audioBtnTexture = Content.Load<Texture2D>("Buttons/audioBtn");
             helpBtnTexture = Content.Load<Texture2D>("Buttons/helpBtn");
+            skipBtnTexture = Content.Load<Texture2D>("Buttons/skipBtn");
 
             // Images
             eIndicatorTexture = Content.Load<Texture2D>("Images/eIndicator");
@@ -454,7 +454,6 @@ namespace Monogame___Final_Project
             charTeleportAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Blink");
             charRunAnimation = Content.Load<Texture2D>("Spritesheets/Main Character/Owlet_Monster_Run");
             charRootAnimation = Content.Load<Texture2D>("Spritesheets/Magic Effects/Root");
-            hitTexture = Content.Load<Texture2D>("Spritesheets/Main Character/rectangle");
             magicSpritesheet = Content.Load<Texture2D>("Spritesheets/Magic Effects/Purple Aura");
             Rectangle sourceRect;
 
@@ -531,7 +530,7 @@ namespace Monogame___Final_Project
         }
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
 
             prevMouseState = mouseState;
@@ -642,6 +641,35 @@ namespace Monogame___Final_Project
                 forestSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 cutsceneCharacter.Update(gameTime);
                 cutsceneEnemy.Update(gameTime);
+
+                // Skip
+                skipBtnRect = new Rectangle(700, 20, 80, 80);
+
+                if (skipBtnRect.Contains(mouseState.Position))
+                {
+                    skipBtnRect = new Rectangle(694, 14, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        skipBtnRect = new Rectangle(706, 26, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            currentSong = hauntedHouseSong;
+                            if (playingMusic)
+                                MediaPlayer.Play(currentSong);
+                            screen = Screen.Mansion1;
+                            skipBtnRect = new Rectangle(700, 20, 80, 80);
+                        }
+                    }
+                }
+
+                if (keyboardState.IsKeyDown(Keys.Right) && prevKeyboardState.IsKeyUp(Keys.Right))
+                {
+                    currentSong = hauntedHouseSong;
+                    if (playingMusic)
+                        MediaPlayer.Play(currentSong);
+                    screen = Screen.Mansion1;
+                }
+
                 if (forestSeconds >= 6)
                 {
                     MediaPlayer.Volume = 0.2f;
@@ -1121,6 +1149,11 @@ namespace Monogame___Final_Project
                         }
                     }
                 }
+
+                if (keyboardState.IsKeyDown(Keys.Escape) && prevKeyboardState.IsKeyUp(Keys.Escape))
+                {
+                    screen = Screen.Mansion4;
+                }
             }
             else if (screen == Screen.KeyBook)
             {
@@ -1161,6 +1194,11 @@ namespace Monogame___Final_Project
                         }
                     }
                 }
+
+                if (keyboardState.IsKeyDown(Keys.Escape) && prevKeyboardState.IsKeyUp(Keys.Escape))
+                {
+                    screen = Screen.Mansion2;
+                }
             }
 
             else if (screen == Screen.Map)
@@ -1181,6 +1219,12 @@ namespace Monogame___Final_Project
                             backBtnRect = new Rectangle(695, 7, 50, 50);
                         }
                     }
+                }
+
+                if (keyboardState.IsKeyDown(Keys.Escape) && prevKeyboardState.IsKeyUp(Keys.Escape))
+                {
+                    screen = currentScreen;
+                    closeMapEffect.Play();
                 }
             }
 
@@ -1243,6 +1287,11 @@ namespace Monogame___Final_Project
                         }
                     }
                 }
+                if (keyboardState.IsKeyDown(Keys.M) && prevKeyboardState.IsKeyUp(Keys.M))
+                {
+                    screen = Screen.Map;
+                    openMapEffect.Play();
+                }
             }
 
             if ((screen != Screen.Map && screen != Screen.Forest && screen != Screen.KeyBook && screen != Screen.Hint1) && playingMusic)
@@ -1291,6 +1340,7 @@ namespace Monogame___Final_Project
                 _spriteBatch.Draw(forestTexture, new Vector2(0, 0), Color.White);
                 cutsceneCharacter.Draw(_spriteBatch);
                 cutsceneEnemy.Draw(_spriteBatch);
+                _spriteBatch.Draw(skipBtnTexture, skipBtnRect, Color.White);
             }
             else if (screen == Screen.Mansion1)
             {
